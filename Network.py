@@ -15,14 +15,6 @@ import numpy as np
 #     print(matrix_multi)
 
 
-# def matrix_multiplication(input, layer_weights):
-
-#     outputlayer_output = np.dot(input, layer_weights)
-
-#     return outputlayer_output
-
-
-    
 
 class Layer_Creation: 
     def __init__(self, inputs, neurons):
