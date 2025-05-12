@@ -106,7 +106,7 @@ def main():
     print("Derivative of L respect to Y Predicted: \n", derivative_l_over_ypredicted.output)
 
     
-
+    #saving 
 
 
 if __name__ == "__main__":
