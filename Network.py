@@ -48,6 +48,14 @@ class Categorical_Loss:
         takemean = np.mean(natural_log)
         self.meanloss = takemean
 
+
+class LossOf_L_Over_YPredicted:
+    def calculate(self, y_predicted, y):
+        # Here y is one hot encoded values.
+        Y_Predicted_Minus_Y =  np.subtract(y_predicted, y)
+        self.output = Y_Predicted_Minus_Y
+
+
 def main():
 
     input =  np.array([[1,    15,   3,     30],
@@ -58,6 +66,8 @@ def main():
                         [0, 1, 0],
                         [0, 0, 1]])
     
+    
+    # Forward pass intialization
     hiddenlayer1 = Layer_Creation(4, 3)
     hiddenlayer2 = Layer_Creation(3, 4)
     output_layer = Layer_Creation(4, 3)
@@ -65,6 +75,12 @@ def main():
     hiddenlayer_activation2 = RELU_Activation()
     outputlayer_activation = SoftMax_Activation()
     loss = Categorical_Loss()
+
+    #Backward pass initialization
+    derivative_l_over_ypredicted = LossOf_L_Over_YPredicted()
+
+    
+    #Forward passing values
 
     #First layer compute
     hiddenlayer1.forward_pass(input, hiddenlayer1.weights)
@@ -76,14 +92,19 @@ def main():
     
     #Output layer compute
     output_layer.forward_pass(hiddenlayer_activation2.output, output_layer.weights)
-    print(output_layer.output)
     outputlayer_activation.activate(output_layer.output)
-    print(outputlayer_activation.output)
+    print("Y_Predicted_Values: \n", outputlayer_activation.output)
     
     loss.calculate(outputlayer_activation.output, one_hot)
-    print(loss.meanloss)
+    print("Loss of this pass: \n", loss.meanloss)
 
-    # # print(output_layer.output)
+
+
+    #Backward passing values
+
+    derivative_l_over_ypredicted.calculate(outputlayer_activation.output, one_hot)
+    print("Derivative of L respect to Y Predicted: \n", derivative_l_over_ypredicted.output)
+
     
 
 

@@ -9,7 +9,5 @@ one_hot = np.array([[1, 0, 0],
                     [0, 0, 1]])
 print(input)
 
-y = np.sum(input * one_hot, axis=1)
-print(y)
-logging = -np.log(y)
-meaning = np.mean(logging)
+Y_Predicted_Minus_Y =  np.subtract(input, one_hot)
+print("Derivative of L with respect to Y_Predicted: \n", Y_Predicted_Minus_Y)
