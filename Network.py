@@ -12,7 +12,6 @@ import numpy as np
     
 #     matrix_multi = matrix_multiplication(input, layer_weights)
 
-#     print(matrix_multi)
 
 
 
