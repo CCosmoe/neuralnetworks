@@ -49,11 +49,24 @@ class Categorical_Loss:
         self.meanloss = takemean
 
 
-class LossOf_L_Over_YPredicted:
+class Derivative_L_Over_Derivative_YPredicted:
     def calculate(self, y_predicted, y):
+        # YPredicted - y
         # Here y is one hot encoded values.
         Y_Predicted_Minus_Y =  np.subtract(y_predicted, y)
         self.output = Y_Predicted_Minus_Y
+
+class Derivative_YPredicted_Over_Derivative_Z:
+    def calculate(self, y_predicted):
+        # YPredicted(1 - YPredicted)
+        One_Minus_Y_Predicted =  y_predicted * (np.subtract(1, y_predicted))
+        self.output = One_Minus_Y_Predicted
+
+class Derivative_Z_Over_Derivative_W:
+    def calculate(self, output_input):
+        # transposed X 
+        transposed =  np.transpose(output_input)
+        self.output = transposed
 
 
 def main():
@@ -77,7 +90,9 @@ def main():
     loss = Categorical_Loss()
 
     #Backward pass initialization
-    derivative_l_over_ypredicted = LossOf_L_Over_YPredicted()
+    derivative_l_over_derivative_ypredicted = Derivative_L_Over_Derivative_YPredicted()
+    derivative_ypredicted_over_derivative_z = Derivative_YPredicted_Over_Derivative_Z()
+    derivative_z_over_derivative_w = Derivative_Z_Over_Derivative_W()
 
     
     #Forward passing values
@@ -91,6 +106,8 @@ def main():
     hiddenlayer_activation2.activate(hiddenlayer2.output)
     
     #Output layer compute
+    print("Output's input: \n", hiddenlayer_activation2.output)
+
     output_layer.forward_pass(hiddenlayer_activation2.output, output_layer.weights)
     outputlayer_activation.activate(output_layer.output)
     print("Y_Predicted_Values: \n", outputlayer_activation.output)
@@ -102,12 +119,19 @@ def main():
 
     #Backward passing values
 
-    derivative_l_over_ypredicted.calculate(outputlayer_activation.output, one_hot)
-    print("Derivative of L respect to Y Predicted: \n", derivative_l_over_ypredicted.output)
+    derivative_l_over_derivative_ypredicted.calculate(outputlayer_activation.output, one_hot)
+    print("Derivative of L respect to Y Predicted: \n", derivative_l_over_derivative_ypredicted.output)
 
+    derivative_ypredicted_over_derivative_z.calculate(outputlayer_activation.output)
+    print("Derivative of YPredicted respect to Z: \n", derivative_ypredicted_over_derivative_z.output)
     
-    #saving 
+    derivative_z_over_derivative_w.calculate(hiddenlayer_activation2.output)
+    print("Derivative of Z respect to W: \n", derivative_z_over_derivative_w.output)
 
+
+
+
+    # next need to work on multiplying 3 vectors to calculate DL / Dw. Make new class.
 
 if __name__ == "__main__":
     main()
