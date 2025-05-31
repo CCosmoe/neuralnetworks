@@ -69,6 +69,7 @@ class Derivative_Z_Over_Derivative_W:
         self.output = transposed
 
 
+
 def main():
 
     input =  np.array([[1,    15,   3,     30],
@@ -128,6 +129,8 @@ def main():
     derivative_z_over_derivative_w.calculate(hiddenlayer_activation2.output)
     print("Derivative of Z respect to W: \n", derivative_z_over_derivative_w.output)
 
+
+    
 
 
 
