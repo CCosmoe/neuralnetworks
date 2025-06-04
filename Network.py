@@ -68,6 +68,11 @@ class Derivative_Z_Over_Derivative_W:
         transposed =  np.transpose(output_input)
         self.output = transposed
 
+class Product3:
+    def calculate(self, l_over_ypredicted, ypredicted_over_z, xj):
+        delta =  np.dot(l_over_ypredicted, ypredicted_over_z)
+        multiplying_with_delta = np.dot(xj, delta)
+        self.output = multiplying_with_delta
 
 
 def main():
@@ -120,13 +125,13 @@ def main():
 
     #Backward passing values
 
-    derivative_l_over_derivative_ypredicted.calculate(outputlayer_activation.output, one_hot)
+    l_over_ypredicted = derivative_l_over_derivative_ypredicted.calculate(outputlayer_activation.output, one_hot)
     print("Derivative of L respect to Y Predicted: \n", derivative_l_over_derivative_ypredicted.output)
 
-    derivative_ypredicted_over_derivative_z.calculate(outputlayer_activation.output)
+    ypredicted_over_z = derivative_ypredicted_over_derivative_z.calculate(outputlayer_activation.output)
     print("Derivative of YPredicted respect to Z: \n", derivative_ypredicted_over_derivative_z.output)
     
-    derivative_z_over_derivative_w.calculate(hiddenlayer_activation2.output)
+    z_over_w = derivative_z_over_derivative_w.calculate(hiddenlayer_activation2.output)
     print("Derivative of Z respect to W: \n", derivative_z_over_derivative_w.output)
 
 
