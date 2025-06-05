@@ -99,7 +99,7 @@ def main():
     derivative_l_over_derivative_ypredicted = Derivative_L_Over_Derivative_YPredicted()
     derivative_ypredicted_over_derivative_z = Derivative_YPredicted_Over_Derivative_Z()
     derivative_z_over_derivative_w = Derivative_Z_Over_Derivative_W()
-
+    three_derivatives_product = Product3()
     
     #Forward passing values
 
@@ -125,21 +125,28 @@ def main():
 
     #Backward passing values
 
-    l_over_ypredicted = derivative_l_over_derivative_ypredicted.calculate(outputlayer_activation.output, one_hot)
-    print("Derivative of L respect to Y Predicted: \n", derivative_l_over_derivative_ypredicted.output)
+    derivative_l_over_derivative_ypredicted.calculate(outputlayer_activation.output, one_hot)
+    l_over_ypredicted = derivative_l_over_derivative_ypredicted.output
+    print("Derivative of L respect to Y Predicted: \n", l_over_ypredicted)
 
-    ypredicted_over_z = derivative_ypredicted_over_derivative_z.calculate(outputlayer_activation.output)
-    print("Derivative of YPredicted respect to Z: \n", derivative_ypredicted_over_derivative_z.output)
+    derivative_ypredicted_over_derivative_z.calculate(outputlayer_activation.output)
+    ypredicted_over_z = derivative_ypredicted_over_derivative_z.output
+    print("Derivative of YPredicted respect to Z: \n", ypredicted_over_z)
     
-    z_over_w = derivative_z_over_derivative_w.calculate(hiddenlayer_activation2.output)
-    print("Derivative of Z respect to W: \n", derivative_z_over_derivative_w.output)
+    derivative_z_over_derivative_w.calculate(hiddenlayer_activation2.output)
+    z_over_w = derivative_z_over_derivative_w.output
+    print("Derivative of Z respect to W: \n", z_over_w)
+
+    three_derivatives_product.calculate(l_over_ypredicted, ypredicted_over_z, z_over_w)
+    three_product = three_derivatives_product.output
+    print("The 3 derivatives product: \n", three_product)
 
 
-    
 
 
-
-    # next need to work on multiplying 3 vectors to calculate DL / Dw. Make new class.
+    # three gradients product completed.
+    # next calculate weight update
+    # equation weights vector for layer - learning rate * the three gradients product
 
 if __name__ == "__main__":
     main()
