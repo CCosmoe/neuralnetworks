@@ -1,21 +1,24 @@
 import numpy as np
 
-l_over_ypredicted =  np.array([[-0.66291657,  0.33512171,  0.32779485],
-                               [ 0.55595716, -0.69645777,  0.14050061],
-                               [ 0.33896514,  0.33564222, -0.67460736]])
-    
-ypredicted_over_z =  np.array([[0.22345819, 0.22281515, 0.22034539],
-                               [0.2468688,  0.21140434, 0.12076019],
-                               [0.22406777, 0.22298652, 0.21951227]])
+output_layer_weights =  np.array([[ 0.09089969, -0.03761097,  0.06690646],
+                                  [ 0.05787504,  0.36574873,  0.15447709],
+                                  [ 0.13360337,  0.10051279,  0.00654227],
+                                  [ 0.10835819,  0.08419912, -0.02765926]])
 
-xj =  np.array([[0.09183786, 2.78843292,  0.19121411],
-                [0.08857933, 4.60067402,  0.12507937],
-                [0.,         0.,          0.28771973],
-                [0.,         0.,          0.        ]])
+learningrate = 0.01
 
-delta =  np.dot(l_over_ypredicted, ypredicted_over_z)
-print("Delta: \n", delta)
+derivative_l_over_derivative_w =  np.array([[ 0.,         0.,           0.,        ],
+                                            [ 0.00255721, -0.0150004,   0.01734683,],
+                                            [ 0.,          0.,          0.,        ],
+                                            [-0.00076774,  0.00393547, -0.00425434]])
 
-multiplying_with_delta = np.dot(xj, delta)
 
-print("3Products: \n", multiplying_with_delta)
+multiply =  np.dot(learningrate, derivative_l_over_derivative_w)
+print('product: \n', multiply)
+
+updateweight = np.subtract(output_layer_weights, multiply)
+print('Updated weight: \n', updateweight)
+
+# -0.0121393571510386 0.0036076339451142 -0.055950551995455
+# -0.0037228112774012  0.0021660471255996  0.1195300502666988
+# 0.0299381410794459  -0.0106143001419634  -0.0835073917938898
