@@ -68,9 +68,14 @@ class Derivative_Z_Over_Derivative_W:
         transposed =  np.transpose(output_input)
         self.output = transposed
 
-class Derivative_L_over_Derivative_w:
-    def calculate(self, l_over_ypredicted, ypredicted_over_z, xj):
+class Calculate_Delta:
+    def calculate(self, l_over_ypredicted, ypredicted_over_z):
         delta =  np.dot(l_over_ypredicted, ypredicted_over_z)
+        self.output = delta
+
+
+class Derivative_L_over_Derivative_w:
+    def calculate(self, xj, delta):
         multiplying_with_delta = np.dot(xj, delta)
         self.output = multiplying_with_delta
 
@@ -107,9 +112,10 @@ def main():
     derivative_l_over_derivative_ypredicted = Derivative_L_Over_Derivative_YPredicted()
     derivative_ypredicted_over_derivative_z = Derivative_YPredicted_Over_Derivative_Z()
     derivative_z_over_derivative_w = Derivative_Z_Over_Derivative_W()
+    calculate_delta = Calculate_Delta()
     derivative_l_over_derivative_w = Derivative_L_over_Derivative_w()
     newWeights = NewWeights()
-    learningrate = 0.01
+    learningrate = 0.05
 
     #Forward passing values
 
@@ -149,7 +155,10 @@ def main():
     z_over_w = derivative_z_over_derivative_w.output
     print("Derivative of Z respect to W: \n", z_over_w)
 
-    derivative_l_over_derivative_w.calculate(l_over_ypredicted, ypredicted_over_z, z_over_w)
+
+    calculate_delta.calculate(l_over_ypredicted, ypredicted_over_z)
+    
+    derivative_l_over_derivative_w.calculate(z_over_w, calculate_delta.output)
     l_over_w = derivative_l_over_derivative_w.output
     print("Derivative of L respect to W: \n", l_over_w)
 
