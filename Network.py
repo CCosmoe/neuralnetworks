@@ -79,13 +79,19 @@ class Derivative_L_over_Derivative_w:
         multiplying_with_delta = np.dot(xj, delta)
         self.output = multiplying_with_delta
 
-
 class NewWeights: 
     def calculate(self, derivative_l_over_derivative_w, learningrate, layerweights):
         multiply =  np.dot(learningrate, derivative_l_over_derivative_w)
         updateweight = np.subtract(layerweights, multiply)
         self.output = updateweight
 
+class NewBiases: 
+    def calculate(self, derivative_l_over_derivative_b, learningrate, layerbiases):
+        # The only difference between calculating weights and biases is the sum we calculate in bias. This is done because original biases have a different shape than the calculated bias. 
+        multiply =  np.dot(learningrate, derivative_l_over_derivative_b)
+        summing = np.sum(multiply, axis=0, keepdims=True)
+        newBiases = np.subtract(layerbiases, summing)
+        self.output = newBiases
 
 
 def main():
@@ -115,7 +121,8 @@ def main():
     calculate_delta = Calculate_Delta()
     derivative_l_over_derivative_w = Derivative_L_over_Derivative_w()
     newWeights = NewWeights()
-    learningrate = 0.05
+    newBiases = NewBiases()
+    learningrate = 0.01
 
     #Forward passing values
 
@@ -132,6 +139,7 @@ def main():
 
     output_layer.forward_pass(hiddenlayer_activation2.output, output_layer.weights)
     print("Output's weights: \n", output_layer.weights)
+    print("Output's biases: \n", output_layer.biases)
 
     outputlayer_activation.activate(output_layer.output)
     print("Y_Predicted_Values: \n", outputlayer_activation.output)
@@ -155,10 +163,10 @@ def main():
     z_over_w = derivative_z_over_derivative_w.output
     print("Derivative of Z respect to W: \n", z_over_w)
 
-
     calculate_delta.calculate(l_over_ypredicted, ypredicted_over_z)
-    
-    derivative_l_over_derivative_w.calculate(z_over_w, calculate_delta.output)
+    delta_value = calculate_delta.output
+
+    derivative_l_over_derivative_w.calculate(z_over_w, delta_value)
     l_over_w = derivative_l_over_derivative_w.output
     print("Derivative of L respect to W: \n", l_over_w)
 
@@ -166,10 +174,14 @@ def main():
     layer_new_weights = newWeights.output
     print("New Weights for layer: \n", layer_new_weights)
 
-    # Weight update is calculated and new weights are printed
-    # next calculate the bias for each neuron in a layer
-    # equation is dl/db = dl/dy^ * dy^/dz * dz/db
-    # we already have dl/dy^ and dy^/dz. We also know dz/db is just 1 because z = wx + b and since we want to check how much bias affected the z value take partialderivative of b and you get 1.
+
+    newBiases.calculate(delta_value, learningrate, output_layer.biases)
+    layer_new_biases = newBiases.output
+    print("New biases for layer: \n", layer_new_biases)
+
+
+    # biases update is calculated and new biases are printed
+    # next is to figure out how to update the biases and weights.
 
 if __name__ == "__main__":
     main()
