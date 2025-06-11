@@ -193,8 +193,10 @@ def main():
     output_layer.updating_weights_biases(layer_new_weights, layer_new_biases)
     outputlayer_updated = output_layer.updated_params
     print("outputlayer_updated: \n", outputlayer_updated)
-    # biases update is calculated and new biases are printed
-    # next is to figure out how to update the biases and weights.
+
+    # wegihts and bias are both updated
+    # fix format
+    # figure out how to update all of them instead of doing it manually.
 
 if __name__ == "__main__":
     main()
