@@ -20,9 +20,20 @@ class Layer_Creation:
     def __init__(self, inputs, neurons):
         self.weights = 0.10*(np.random.randn(inputs, neurons))
         self.biases = np.zeros((1, neurons))
+        self.forward_output = None
+        self.updated_params = None
 
     def forward_pass(self, input, weights):
-        self.output = np.dot(input, weights) + self.biases
+        self.forward_output = np.dot(input, weights) + self.biases
+    
+    def updating_weights_biases(self, layerWeights, layerBiases):
+        self.weights = layerWeights
+        self.biases = layerBiases
+        self.updated_params = {
+            'Updated_Weights': self.weights,
+            'Updated_Biases': self.biases
+        }
+
 
 class RELU_Activation:
     # RELU either returns 0 if input is less than or equal 0. Otherwise return input itself.
@@ -128,11 +139,11 @@ def main():
 
     #First layer compute
     hiddenlayer1.forward_pass(input, hiddenlayer1.weights)
-    hiddenlayer_activation.activate(hiddenlayer1.output)
+    hiddenlayer_activation.activate(hiddenlayer1.forward_output)
 
     #Second layer compute
     hiddenlayer2.forward_pass(hiddenlayer_activation.output, hiddenlayer2.weights)
-    hiddenlayer_activation2.activate(hiddenlayer2.output)
+    hiddenlayer_activation2.activate(hiddenlayer2.forward_output)
     
     #Output layer compute
     print("Output's input: \n", hiddenlayer_activation2.output)
@@ -141,12 +152,11 @@ def main():
     print("Output's weights: \n", output_layer.weights)
     print("Output's biases: \n", output_layer.biases)
 
-    outputlayer_activation.activate(output_layer.output)
+    outputlayer_activation.activate(output_layer.forward_output)
     print("Y_Predicted_Values: \n", outputlayer_activation.output)
     
     loss.calculate(outputlayer_activation.output, one_hot)
     print("Loss of this pass: \n", loss.meanloss)
-
 
 
     #Backward passing values
@@ -180,6 +190,9 @@ def main():
     print("New biases for layer: \n", layer_new_biases)
 
 
+    output_layer.updating_weights_biases(layer_new_weights, layer_new_biases)
+    outputlayer_updated = output_layer.updated_params
+    print("outputlayer_updated: \n", outputlayer_updated)
     # biases update is calculated and new biases are printed
     # next is to figure out how to update the biases and weights.
 
