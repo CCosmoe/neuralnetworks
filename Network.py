@@ -29,10 +29,8 @@ class Layer_Creation:
     def updating_weights_biases(self, layerWeights, layerBiases):
         self.weights = layerWeights
         self.biases = layerBiases
-        self.updated_params = {
-            'Updated_Weights': self.weights,
-            'Updated_Biases': self.biases
-        }
+        self.updated_params =  self.weights, self.biases
+
 
 
 class RELU_Activation:
@@ -191,11 +189,12 @@ def main():
 
 
     output_layer.updating_weights_biases(layer_new_weights, layer_new_biases)
-    outputlayer_updated = output_layer.updated_params
-    print("outputlayer_updated: \n", outputlayer_updated)
+    outputlayer_weights, outputlayer_biases = output_layer.updated_params
+    print('Outputlayer_New_Weights: \n', outputlayer_weights)
+    print('Outputlayer_New_Biases: \n', outputlayer_biases)
 
-    # wegihts and bias are both updated
-    # fix format
+    # weights and bias are both updated
+    # fixed format
     # figure out how to update all of them instead of doing it manually.
 
 if __name__ == "__main__":
