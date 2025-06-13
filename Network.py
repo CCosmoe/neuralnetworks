@@ -115,12 +115,17 @@ def main():
     
     
     # Forward pass intialization
+    # 3 layers in total
+    # Remember input layer exists but it does not have any weights. Its pupose is to serve the input to the first hidden layer.
     hiddenlayer1 = Layer_Creation(4, 3)
     hiddenlayer2 = Layer_Creation(3, 4)
     output_layer = Layer_Creation(4, 3)
+    number_of_layers = 3  # number depends on how many layers we have. In this case 2 hidden layer and one output layer.
+
     hiddenlayer_activation = RELU_Activation()
     hiddenlayer_activation2 = RELU_Activation()
     outputlayer_activation = SoftMax_Activation()
+
     loss = Categorical_Loss()
 
     #Backward pass initialization
@@ -193,9 +198,11 @@ def main():
     print('Outputlayer_New_Weights: \n', outputlayer_weights)
     print('Outputlayer_New_Biases: \n', outputlayer_biases)
 
-    # weights and bias are both updated
-    # fixed format
-    # figure out how to update all of them instead of doing it manually.
+
+    # Needed new math equations for updating hidden layer's weights.
+    # Next try to calculate hidden layer 2 weights and biases.
+    # Apply some concept on hidden layer 1.
+    # Once done with that figure out how to do this with a for loop or recursion and not manually.
 
 if __name__ == "__main__":
     main()
