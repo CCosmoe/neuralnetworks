@@ -199,9 +199,9 @@ def main():
     print('Outputlayer_New_Biases: \n', outputlayer_biases)
 
 
-    # Needed new math equations for updating hidden layer's weights.
-    # Next try to calculate hidden layer 2 weights and biases.
-    # Apply some concept on hidden layer 1.
+    # Got the math for updating hidden layers.
+    # Got math for updating bias for hidden layers.
+    # Next try it with numbers
     # Once done with that figure out how to do this with a for loop or recursion and not manually.
 
 if __name__ == "__main__":
