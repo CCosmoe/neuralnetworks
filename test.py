@@ -4,18 +4,11 @@ derivative_l_over_derivative_b =  np.array([[ -0.3382036,  0.02460542, -0.007451
                                             [ 0.18038728,  0.01465984,  0.17802348],
                                             [ 0.00177756, -0.02409236, -0.02121836]])
 
-learningrate = 0.01
-
-biases = np.array([1, 2, 3])
 
 
-multiply =  np.dot(learningrate, derivative_l_over_derivative_b)
-print("Multiple by 0.01: \n", multiply)
-summing = np.sum(multiply, axis=0, keepdims=True)
-print("Adding: \n", summing)
+array  = np.where(derivative_l_over_derivative_b > 0, 1.0, 0.0)
 
-newBiases = np.subtract(biases, summing)
-print("NewBiases: \n", newBiases)
+print("Array: \n", array)
 
 # upadtebiases = np.subtract(biases, multiply)
 
