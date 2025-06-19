@@ -36,11 +36,11 @@ class Layer_Creation:
 class RELU_Activation:
     # RELU either returns 0 if input is less than or equal 0. Otherwise return input itself.
     def activate(self, inputs):
-        # Maybe have an self.input to save the input values. They are need for back propgations.
+        # Maybe have an self.input to save the input values. They are needed for back propgations.
         self.output = np.maximum(0, inputs)
  
-    # The antiderivative of RELU can be added here.
-    # The anti derivative of RELu returns 1 if the value is greater than 0. Otherwise it returns 0. This indicates which neuron was active.
+    # The derivative of RELU can be added here.
+    # The derivative of RELU returns 1 if the value is greater than 0. Otherwise it returns 0. This indicates which neuron was active.
 
 class SoftMax_Activation:
     def activate(self, inputs): 
