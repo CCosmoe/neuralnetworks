@@ -41,6 +41,10 @@ class RELU_Activation:
  
     # The derivative of RELU can be added here.
     # The derivative of RELU returns 1 if the value is greater than 0. Otherwise it returns 0. This indicates which neuron was active.
+    #IMPORTANT. TEST THIS.
+    def backward(self, inputs):
+        ones_and_zeros  = np.where(inputs > 0, 1.0, 0.0)
+        self.output = ones_and_zeros
 
 class SoftMax_Activation:
     def activate(self, inputs): 
