@@ -1,14 +1,44 @@
 import numpy as np
 
-derivative_l_over_derivative_b =  np.array([[ -0.3382036,  0.02460542, -0.00745131],
-                                            [ 0.18038728,  0.01465984,  0.17802348],
-                                            [ 0.00177756, -0.02409236, -0.02121836]])
+x1 =  np.array([[ -0.3382036  , 0.02460542,   -0.00745131],
+                  [0.18038728, 0.01465984 ,  0.17802348],
+                  [0.00177756, -0.02409236 , -0.02121836]])
+
+x2 = np.array([[0.1, -0.5, -0.44],
+               [-0.14, 0.12, 0.73],
+               [0.5, -0.33, -0.13]])
+
+x3 = np.array([[1,1,1],
+               [1,0,0],
+               [1,1,1]])
 
 
+x4 = np.array([[1,2,-1.5],
+               [2,5,2.7],
+               [3,-1,3.3],
+               [2.5,2.0,-0.8]])
 
-array  = np.where(derivative_l_over_derivative_b > 0, 1.0, 0.0)
 
-print("Neuron status: \n", array)
+x5 = np.array([[0.2, 0.5, -0.26],
+               [0.8, -0.91, -0.27],
+               [-0.5, 0.26, 0.17],
+               [1.0, -0.5, 0.87]])
+
+mul = np.dot(x1, x2)
+
+mul2 = np.dot(mul, x3)
+
+mul3 = np.dot(x4, mul2)
+mul4 = np.dot(0.01, mul3)
+
+subbing = np.subtract(x5, mul4)
+# reluvals  = np.maximum(0, addedbias)
+
+print("Neuron status: \n", mul)
+print("Neuron status: \n", mul2)
+print("Neuron status: \n", mul3)
+print("Neuron status: \n", mul4)
+print("Neuron status: \n", subbing)
 
 # upadtebiases = np.subtract(biases, multiply)
 
