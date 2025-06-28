@@ -210,8 +210,8 @@ def main():
     # Got the math for updating hidden layers.
     # Got math for updating bias for hidden layers.
     # Was able to calculate new weights for hidden layer on paper
-    # Next calculate the bias on paper
-    # Once done with that figure out how to do this with a for loop or recursion and not manually.
+    # Was able to calculate new biases for hidden layer on paper
+    # Next figure out how to do this with a for loop or recursion and not manually.
 
 if __name__ == "__main__":
     main()
