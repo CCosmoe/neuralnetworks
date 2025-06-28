@@ -24,6 +24,7 @@ x5 = np.array([[0.2, 0.5, -0.26],
                [-0.5, 0.26, 0.17],
                [1.0, -0.5, 0.87]])
 
+biases = [1, 2, 3]
 mul = np.dot(x1, x2)
 
 mul2 = np.dot(mul, x3)
@@ -34,14 +35,21 @@ mul4 = np.dot(0.01, mul3)
 subbing = np.subtract(x5, mul4)
 # reluvals  = np.maximum(0, addedbias)
 
+mul5 = np.dot(0.01, mul2)
+
+
 print("Neuron status: \n", mul)
 print("Neuron status: \n", mul2)
 print("Neuron status: \n", mul3)
 print("Neuron status: \n", mul4)
 print("Neuron status: \n", subbing)
-
+print("Neuron status: \n", mul5)
+added = np.sum(mul5, axis=0, keepdims=True)
 # upadtebiases = np.subtract(biases, multiply)
+print("added \n", added)
 
+subbing2 = np.subtract(biases, added)
+print("subbing \n", subbing2)
 
 
 # -0.012139357151330386 0.003607622339451142 -0.0559570551995455
