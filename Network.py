@@ -20,6 +20,8 @@ class Layer_Creation:
     def __init__(self, inputs, neurons):
         self.weights = 0.10*(np.random.randn(inputs, neurons))
         self.biases = np.zeros((1, neurons))
+        self.old_weights = None                                      # We need the old weights and biases to update earlier layers.
+        self.old_biases = None
         self.forward_output = None
         self.updated_params = None
 
@@ -27,9 +29,11 @@ class Layer_Creation:
         self.forward_output = np.dot(input, weights) + self.biases
     
     def updating_weights_biases(self, layerWeights, layerBiases):
+        self.old_weights = self.weights
+        self.old_biases = self.biases
         self.weights = layerWeights
         self.biases = layerBiases
-        self.updated_params =  self.weights, self.biases
+        self.updated_params =  self.weights, self.biases, self.old_weights, self.old_biases
 
 
 
@@ -128,7 +132,6 @@ def main():
     hiddenlayer1 = Layer_Creation(4, 3)
     hiddenlayer2 = Layer_Creation(3, 4)
     output_layer = Layer_Creation(4, 3)
-    number_of_layers = 3  # number depends on how many layers we have. In this case 2 hidden layer and one output layer.
 
     hiddenlayer_activation = RELU_Activation()
     hiddenlayer_activation2 = RELU_Activation()
@@ -170,7 +173,7 @@ def main():
     print("Loss of this pass: \n", loss.meanloss)
 
 
-    #Backward passing values
+    #Backward passing values for output
 
     derivative_l_over_derivative_ypredicted.calculate(outputlayer_activation.output, one_hot)
     l_over_ypredicted = derivative_l_over_derivative_ypredicted.output
@@ -193,25 +196,37 @@ def main():
 
     newWeights.calculate(l_over_w, learningrate, output_layer.weights)
     layer_new_weights = newWeights.output
-    print("New Weights for layer: \n", layer_new_weights)
+    print("New Weights for output layer: \n", layer_new_weights)
 
 
     newBiases.calculate(delta_value, learningrate, output_layer.biases)
     layer_new_biases = newBiases.output
-    print("New biases for layer: \n", layer_new_biases)
+    print("New biases for output layer: \n", layer_new_biases)
 
 
     output_layer.updating_weights_biases(layer_new_weights, layer_new_biases)
-    outputlayer_weights, outputlayer_biases = output_layer.updated_params
-    print('Outputlayer_New_Weights: \n', outputlayer_weights)
-    print('Outputlayer_New_Biases: \n', outputlayer_biases)
+    outputlayer_new_weights, outputlayer_new_biases, outputlayer_old_weights, outputlayer_old_biases = output_layer.updated_params
+    print('Outputlayer_New_Weights: \n', outputlayer_new_weights)
+    print('Outputlayer_New_Biases: \n', outputlayer_new_biases)
+    print('Outputlayer_old_Weights: \n', outputlayer_old_weights)
+    print('Outputlayer_old_Biases: \n', outputlayer_old_biases)
 
+    # Backward passing values for hidden layer2
+    print("Hidden Layer two's weights: \n", hiddenlayer2.weights)
+    print("Hidden Layer two's biases: \n", hiddenlayer2.biases)
 
+    # Need these to update hidden layer 2
+    # delta_value
+    # Output's original weights
+    # Derivative of RELU. Just backward on the RELU activation class
+    # The transposed input to the hidden layer 2
+
+    # TO DO:
     # Got the math for updating hidden layers.
     # Got math for updating bias for hidden layers.
     # Was able to calculate new weights for hidden layer on paper
     # Was able to calculate new biases for hidden layer on paper
-    # Next figure out how to do this with a for loop or recursion and not manually.
+    # Try to calculate hidden layer2 and hidden layer1 weights and biases manually
 
 if __name__ == "__main__":
     main()
