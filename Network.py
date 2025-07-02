@@ -218,8 +218,9 @@ def main():
     # Need these to update hidden layer 2
     # delta_value
     # Output's original weights
-    # Derivative of RELU. Just backward on the RELU activation class
+    # Derivative of RELU. Just backward on the RELU activation class. Test this.
     # The transposed input to the hidden layer 2
+    # Multiply all of these together to calculate the hidden layer's weight
 
     # TO DO:
     # Got the math for updating hidden layers.
