@@ -74,13 +74,13 @@ class Derivative_L_Over_Derivative_YPredicted:
         # YPredicted - y
         # Here y is one hot encoded values.
         Y_Predicted_Minus_Y =  np.subtract(y_predicted, y)
-        self.output = Y_Predicted_Minus_Y
+        return Y_Predicted_Minus_Y
 
 class Derivative_YPredicted_Over_Derivative_Z:
     def calculate(self, y_predicted):
         # YPredicted(1 - YPredicted)
         One_Minus_Y_Predicted =  y_predicted * (np.subtract(1, y_predicted))
-        self.output = One_Minus_Y_Predicted
+        return One_Minus_Y_Predicted
 
 class Derivative_Z_Over_Derivative_W:
     def calculate(self, output_input):
@@ -90,19 +90,19 @@ class Derivative_Z_Over_Derivative_W:
 class Calculate_Delta:
     def calculate(self, l_over_ypredicted, ypredicted_over_z):
         delta =  np.dot(l_over_ypredicted, ypredicted_over_z)
-        self.output = delta
+        return delta
 
 
 class Derivative_L_over_Derivative_w:
     def calculate(self, xj, delta):
         multiplying_with_delta = np.dot(xj, delta)
-        self.output = multiplying_with_delta
+        return multiplying_with_delta
 
 class NewWeights: 
     def calculate(self, derivative_l_over_derivative_w, learningrate, layerweights):
         multiply =  np.dot(learningrate, derivative_l_over_derivative_w)
         updateweight = np.subtract(layerweights, multiply)
-        self.output = updateweight
+        return updateweight
 
 class NewBiases: 
     def calculate(self, derivative_l_over_derivative_b, learningrate, layerbiases):
@@ -110,7 +110,7 @@ class NewBiases:
         multiply =  np.dot(learningrate, derivative_l_over_derivative_b)
         summing = np.sum(multiply, axis=0, keepdims=True)
         newBiases = np.subtract(layerbiases, summing)
-        self.output = newBiases
+        return newBiases
 
 
 def main():
@@ -179,32 +179,26 @@ def main():
 
     #Backward passing values for output
 
-    derivative_l_over_derivative_ypredicted.calculate(outputlayer_activation.output, one_hot)
-    l_over_ypredicted = derivative_l_over_derivative_ypredicted.output
+    l_over_ypredicted = derivative_l_over_derivative_ypredicted.calculate(outputlayer_activation.output, one_hot)
     print("Derivative of L respect to Y Predicted: \n", l_over_ypredicted)
 
-    derivative_ypredicted_over_derivative_z.calculate(outputlayer_activation.output)
-    ypredicted_over_z = derivative_ypredicted_over_derivative_z.output
+    ypredicted_over_z = derivative_ypredicted_over_derivative_z.calculate(outputlayer_activation.output)
     print("Derivative of YPredicted respect to Z: \n", ypredicted_over_z)
     
     z_over_w = derivative_z_over_derivative_w.calculate(hiddenlayer_activation2.output)
-    # z_over_w = derivative_z_over_derivative_w.output
     print("Derivative of Z respect to W: \n", z_over_w)
 
-    calculate_delta.calculate(l_over_ypredicted, ypredicted_over_z)
-    delta_value = calculate_delta.output
+    delta_value_l_over_ypredicted_times_ypredicted_over_zo = calculate_delta.calculate(l_over_ypredicted, ypredicted_over_z) # Derivative of L over Derivative of ypredicted * derivative of ypredicted over derivative of zo
+    print("Delta value for Output Layer: \n", delta_value_l_over_ypredicted_times_ypredicted_over_zo)
 
-    derivative_l_over_derivative_w.calculate(z_over_w, delta_value)
-    l_over_w = derivative_l_over_derivative_w.output
+    l_over_w = derivative_l_over_derivative_w.calculate(z_over_w, delta_value_l_over_ypredicted_times_ypredicted_over_zo)
     print("Derivative of L respect to W: \n", l_over_w)
 
-    newWeights.calculate(l_over_w, learningrate, output_layer.weights)
-    layer_new_weights = newWeights.output
+    layer_new_weights = newWeights.calculate(l_over_w, learningrate, output_layer.weights)
     print("New Weights for output layer: \n", layer_new_weights)
 
 
-    newBiases.calculate(delta_value, learningrate, output_layer.biases)
-    layer_new_biases = newBiases.output
+    layer_new_biases = newBiases.calculate(delta_value_l_over_ypredicted_times_ypredicted_over_zo, learningrate, output_layer.biases)
     print("New biases for output layer: \n", layer_new_biases)
 
 
@@ -220,7 +214,7 @@ def main():
     print("Hidden Layer two's biases: \n", hiddenlayer2.biases)
 
     # Need these to update hidden layer 2
-    # delta_value
+    # delta_value_l_over_ypredicted_times_ypredicted_over_zo
     # Output's original weights
     # Derivative of RELU. Just backward on the RELU activation class. Test this.
     # The transposed input to the hidden layer 2
@@ -228,19 +222,22 @@ def main():
 
 
     # Variables that need to be multiplied together.
-    delta_value
-    output_layer.old_weights
+    delta_value_l_over_ypredicted_times_ypredicted_over_zo     # Derivative of L over Derivative of ypredicted * derivative of ypredicted over derivative of zo
+    derivative_zo_derivative_ah = output_layer.old_weights
     # calculating hidden2 derv of relu
     hiddenlayer_activation2.backward(hiddenlayer2_zvalue)
-    hiddenlayer_relu_derivative2 = hiddenlayer_activation2.derivative
+    derivative_ah_over_zh = hiddenlayer_activation2.derivative
+    print("hiddenlayer_ah_over_zh: \n", derivative_ah_over_zh)
     # need to calculater z over w but for hidden2.
-    hiddenlayer_z_over_w2 = derivative_z_over_derivative_w.calculate(hiddenlayer1_activate_output)
-    print("hiddenlayer_z_over_w2 (transposed): \n", hiddenlayer_z_over_w2)
-
+    derivative_zh_over_wh = derivative_z_over_derivative_w.calculate(hiddenlayer1_activate_output)
+    print("hiddenlayer_z_over_w2 (transposed): \n", derivative_zh_over_wh)
+    delta_value_zo_over_ah_times_ah_over_zh = calculate_delta.calculate(derivative_zo_derivative_ah, derivative_ah_over_zh)
+    print("Delta value for Hidden layer2: \n", delta_value_zo_over_ah_times_ah_over_zh)
 
     # TO DO:
     # In the process of calculating hiddenlayer2 weights.
-    # Got all the multiplication variables. Need to just multiply them
+    # We have to multiply two delta values. One from hidden layer and the other from output layer.
+    # Once done multiply it with the transposed values and then change the weights to see what it looks like.
 
 if __name__ == "__main__":
     main()
