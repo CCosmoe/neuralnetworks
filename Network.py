@@ -161,7 +161,7 @@ def main():
     hiddenlayer2_zvalue = hiddenlayer2.forward_output
     hiddenlayer_activation2.activate(hiddenlayer2_zvalue)
     hiddenlayer2_activate_output = hiddenlayer_activation2.output
-    # print("Hidden's Layer's 2 after activation: \n", hiddenlayer2_activate_output)
+    print("Hidden's Layer's 2 after activation: \n", hiddenlayer2_activate_output)
 
     #Output layer compute
     print("Output's input: \n", hiddenlayer_activation2.output)
@@ -189,7 +189,7 @@ def main():
     print("Derivative of Z respect to W: \n", z_over_w)
 
     delta_value_l_over_ypredicted_times_ypredicted_over_zo = calculate_delta.calculate(l_over_ypredicted, ypredicted_over_z) # Derivative of L over Derivative of ypredicted * derivative of ypredicted over derivative of zo
-    print("Delta value for Output Layer: \n", delta_value_l_over_ypredicted_times_ypredicted_over_zo)
+    # print("Delta value for Output Layer: \n", delta_value_l_over_ypredicted_times_ypredicted_over_zo)
 
     l_over_w = derivative_l_over_derivative_w.calculate(z_over_w, delta_value_l_over_ypredicted_times_ypredicted_over_zo)
     print("Derivative of L respect to W: \n", l_over_w)
@@ -223,21 +223,40 @@ def main():
 
     # Variables that need to be multiplied together.
     delta_value_l_over_ypredicted_times_ypredicted_over_zo     # Derivative of L over Derivative of ypredicted * derivative of ypredicted over derivative of zo
-    derivative_zo_derivative_ah = output_layer.old_weights
+    derivative_zo_derivative_ah = derivative_z_over_derivative_w.calculate(output_layer.old_weights)
     # calculating hidden2 derv of relu
+    # print("Hiddenlayer2_zvalue: \n", hiddenlayer2_zvalue)
     hiddenlayer_activation2.backward(hiddenlayer2_zvalue)
+    print("Derv RELU: \n", hiddenlayer_activation2.derivative)
+    
     derivative_ah_over_zh = hiddenlayer_activation2.derivative
-    print("hiddenlayer_ah_over_zh: \n", derivative_ah_over_zh)
+    print("Deltavalue_output: \n", delta_value_l_over_ypredicted_times_ypredicted_over_zo)
+    print("Derivative_zo_over_ah: \n", derivative_zo_derivative_ah)
+    print("Original Derivative_ah_over_zh: \n", hiddenlayer_activation2.derivative)
+    print("Derivative_ah_over_zh: \n", derivative_ah_over_zh)
     # need to calculater z over w but for hidden2.
     derivative_zh_over_wh = derivative_z_over_derivative_w.calculate(hiddenlayer1_activate_output)
-    print("hiddenlayer_z_over_w2 (transposed): \n", derivative_zh_over_wh)
-    delta_value_zo_over_ah_times_ah_over_zh = calculate_delta.calculate(derivative_zo_derivative_ah, derivative_ah_over_zh)
-    print("Delta value for Hidden layer2: \n", delta_value_zo_over_ah_times_ah_over_zh)
+    print("Derivative_zh_over_wh: \n", derivative_zh_over_wh)
+    delta_value_times_zo_over_ah = calculate_delta.calculate(delta_value_l_over_ypredicted_times_ypredicted_over_zo, 
+                                                                        derivative_zo_derivative_ah)
+    print("Delta_value_times_zo_over_ah: \n", delta_value_times_zo_over_ah)
+    delta_value_times_zo_over_ah_times_ah_over_zh = delta_value_times_zo_over_ah * derivative_ah_over_zh
+    print("Delta_value_times_zo_over_ah_times_ah_over_zh: \n", delta_value_times_zo_over_ah_times_ah_over_zh)
+
+    delta_value_times_zo_over_ah_times_ah_over_zh_times_zh_over_wh = derivative_l_over_derivative_w.calculate(
+        derivative_zh_over_wh, delta_value_times_zo_over_ah_times_ah_over_zh)
+    
+    print("Delta_value_times_zo_over_ah_times_ah_over_zh_times_zh_over_wh: \n", delta_value_times_zo_over_ah_times_ah_over_zh_times_zh_over_wh)
+
+    hidden_layer2_new_weights = newWeights.calculate(delta_value_times_zo_over_ah_times_ah_over_zh_times_zh_over_wh
+                                                    , learningrate, hiddenlayer2.weights)
+    print("Hidden_layer_new_weights: \n", hidden_layer2_new_weights)
 
     # TO DO:
-    # In the process of calculating hiddenlayer2 weights.
-    # We have to multiply two delta values. One from hidden layer and the other from output layer.
-    # Once done multiply it with the transposed values and then change the weights to see what it looks like.
+    # Hidden weights calculated
+    # Update hidden layer weights.
+    # Figure out how to update biases next.
+    # Get a deeper understanding on whats being transposed during output layer and hidden layer2 and hidden layer1.
 
 if __name__ == "__main__":
     main()
