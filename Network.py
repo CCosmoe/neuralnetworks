@@ -253,10 +253,10 @@ def main():
     print("Hidden_layer_new_weights: \n", hidden_layer2_new_weights)
 
     # TO DO:
-    # Hidden weights calculated
-    # Update hidden layer weights.
     # Figure out how to update biases next.
-    # Get a deeper understanding on whats being transposed during output layer and hidden layer2 and hidden layer1.
+
+    # Learned:
+    # Understand the meaning behind transposing values.
 
 if __name__ == "__main__":
     main()
