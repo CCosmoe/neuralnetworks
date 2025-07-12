@@ -179,6 +179,12 @@ def main():
 
     #Backward passing values for output
 
+    # Equation
+    # dL/dWo = dL/dYpredicted * dYpredicted/dZo * dZo/dWo
+    # dL/dWo = dZo/dWo * deltaO                            Here deltaO is created by matrix multiplying dL/dYpredicted * dYpredicted/dZo
+    # dL/dWo = deltaOutput                                 Here deltaOutput is achieved after transposing dZo/dWo and then matrix multiplying with deltaO
+
+    
     l_over_ypredicted = derivative_l_over_derivative_ypredicted.calculate(outputlayer_activation.output, one_hot)
     print("Derivative of L respect to Y Predicted: \n", l_over_ypredicted)
 
@@ -213,14 +219,13 @@ def main():
     print("Hidden Layer two's weights: \n", hiddenlayer2.weights)
     print("Hidden Layer two's biases: \n", hiddenlayer2.biases)
 
-    # Need these to update hidden layer 2
-    # delta_value_l_over_ypredicted_times_ypredicted_over_zo
-    # Output's original weights
-    # Derivative of RELU. Just backward on the RELU activation class. Test this.
-    # The transposed input to the hidden layer 2
-    # Multiply all of these together to calculate the hidden layer's weight
-
-
+    # Equation
+    # dL/dWh2 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2 * dZh2/dWh2
+    # dL/dWh2 = deltaO * dZo/dAh2 * dAh2/ dZh2 * dZh2/dWh2                            Here deltaO is achieved by matrix multiplying dL/dYpredicted * dYpredicted/dZo
+    # dL/dWh2 = deltaH * dAh2/ dZh2 * dZh2/dWh2                                       Here deltaH is achieved by matrix multiplying deltaO with dZo/dAh2(transposed value)
+    # dL/dWh2 = dZh2/dWh2 * DeltaF                                                    Here deltaF is achieved by applying elemntwise operation between deltaH * dAh2/ dZh2
+    # dL/dWh2 = deltaHidden2                                                          Here deltaHidden2 is achieved by transposing dZh2/dWh2 and matrix multiplying by DeltaF
+   
     # Variables that need to be multiplied together.
     delta_value_l_over_ypredicted_times_ypredicted_over_zo     # Derivative of L over Derivative of ypredicted * derivative of ypredicted over derivative of zo
     derivative_zo_derivative_ah = derivative_z_over_derivative_w.calculate(output_layer.old_weights)
