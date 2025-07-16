@@ -179,7 +179,7 @@ def main():
 
     #Backward passing values for output
 
-    # Equation
+    # Equation for output layer weight update.
     # dL/dWo = dL/dYpredicted * dYpredicted/dZo * dZo/dWo
     # dL/dWo = dZo/dWo * deltaO                            Here deltaO is created by matrix multiplying dL/dYpredicted * dYpredicted/dZo
     # dL/dWo = deltaOutput                                 Here deltaOutput is achieved after transposing dZo/dWo and then matrix multiplying with deltaO
@@ -207,7 +207,6 @@ def main():
     layer_new_biases = newBiases.calculate(delta_value_l_over_ypredicted_times_ypredicted_over_zo, learningrate, output_layer.biases)
     print("New biases for output layer: \n", layer_new_biases)
 
-
     output_layer.updating_weights_biases(layer_new_weights, layer_new_biases)
     outputlayer_new_weights, outputlayer_new_biases, outputlayer_old_weights, outputlayer_old_biases = output_layer.updated_params
     print('Outputlayer_New_Weights: \n', outputlayer_new_weights)
@@ -219,18 +218,14 @@ def main():
     print("Hidden Layer two's weights: \n", hiddenlayer2.weights)
     print("Hidden Layer two's biases: \n", hiddenlayer2.biases)
 
-    # Equation
+    # Equation for hidden layer 2 weight update.
     # dL/dWh2 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2 * dZh2/dWh2
     # dL/dWh2 = deltaO * dZo/dAh2 * dAh2/ dZh2 * dZh2/dWh2                            Here deltaO is achieved by matrix multiplying dL/dYpredicted * dYpredicted/dZo
     # dL/dWh2 = deltaH * dAh2/ dZh2 * dZh2/dWh2                                       Here deltaH is achieved by matrix multiplying deltaO with dZo/dAh2(transposed value)
     # dL/dWh2 = dZh2/dWh2 * DeltaF                                                    Here deltaF is achieved by applying elemntwise operation between deltaH * dAh2/ dZh2
     # dL/dWh2 = deltaHidden2                                                          Here deltaHidden2 is achieved by transposing dZh2/dWh2 and matrix multiplying by DeltaF
    
-    # Variables that need to be multiplied together.
-    delta_value_l_over_ypredicted_times_ypredicted_over_zo     # Derivative of L over Derivative of ypredicted * derivative of ypredicted over derivative of zo
     derivative_zo_derivative_ah = derivative_z_over_derivative_w.calculate(output_layer.old_weights)
-    # calculating hidden2 derv of relu
-    # print("Hiddenlayer2_zvalue: \n", hiddenlayer2_zvalue)
     hiddenlayer_activation2.backward(hiddenlayer2_zvalue)
     print("Derv RELU: \n", hiddenlayer_activation2.derivative)
     
@@ -257,11 +252,19 @@ def main():
                                                     , learningrate, hiddenlayer2.weights)
     print("Hidden_layer_new_weights: \n", hidden_layer2_new_weights)
 
-    # TO DO:
-    # Figure out how to update biases next.
 
-    # Learned:
-    # Understand the meaning behind transposing values.
+    # Equation for hidden layer 2 biases update.
+    # dL/dBh2 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2 * dZh2/dBh2
+    # dL/dBh2 = deltaO * dZo/dAh2 * dAh2/ dZh2 * dZh2/dBh2                            Here deltaO is achieved by matrix multiplying dL/dYpredicted * dYpredicted/dZo
+    # dL/dBh2 = deltaH * dAh2/ dZh2 * dZh2/dBh2                                       Here deltaH is achieved by matrix multiplying deltaO with dZo/dAh2(transposed value)
+    # dL/dBh2 = DeltaF * dZh2/dBh2                                                    Here deltaF is achieved by applying elemntwise operation between deltaH * dAh2/ dZh2
+    # dL/dBh2 = DeltaF                                                                Here the answer is just DeltaF because dZh2/dBh2 is just 1.
+
+
+    # TO DO:
+    # Rename the variables on the hidden layer 2 to match the equation
+    # Once done work on the calculating the biases for hidden layer 2.
+
 
 if __name__ == "__main__":
     main()
