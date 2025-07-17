@@ -260,6 +260,13 @@ def main():
     # dL/dBh2 = DeltaF * dZh2/dBh2                                                    Here deltaF is achieved by applying elemntwise operation between deltaH * dAh2/ dZh2
     # dL/dBh2 = DeltaF                                                                Here the answer is just DeltaF because dZh2/dBh2 is just 1.
 
+    # Need these values to calculate bias.
+    delta_value_times_zo_over_ah
+    delta_value_times_zo_over_ah_times_ah_over_zh
+
+    # bias equation
+    # b = b - 0.01(calculated bias avg per column)
+
 
     # TO DO:
     # Rename the variables on the hidden layer 2 to match the equation
