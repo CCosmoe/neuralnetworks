@@ -270,6 +270,10 @@ def main():
     print('Hiddenlayer2_old_Biases: \n', hiddenlayer2_old_biases)
 
 
+
+    # Equation for hidden layer 1 weight gradient.
+    # dL/dWh1 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2 * dZh2/dAh1 * dAh1/dZh1 * dZh1/dWh1
+
     # Hidden layer 2 weights and bias are calculated.
     # The weights and bias are also updated.
     # Deleting unnecessary details and cleaning terminal.
