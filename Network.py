@@ -229,26 +229,26 @@ def main():
     hiddenlayer_activation2.backward(hiddenlayer2_zvalue)
     print("Derv RELU: \n", hiddenlayer_activation2.derivative)
     
-    derivative_ah_over_zh2 = hiddenlayer_activation2.derivative
+    derivative_ah2_over_zh2 = hiddenlayer_activation2.derivative
     print("Deltavalue_output: \n", delta_value_l_over_ypredicted_times_ypredicted_over_zo)
     print("Derivative_zo_over_ah: \n", derivative_zo_derivative_ah2)
     print("Original Derivative_ah_over_zh: \n", hiddenlayer_activation2.derivative)
-    print("Derivative_ah_over_zh: \n", derivative_ah_over_zh2)
+    print("Derivative_ah_over_zh: \n", derivative_ah2_over_zh2)
     # need to calculater z over w but for hidden2.
-    derivative_zh_over_wh2 = derivative_z_over_derivative_w.calculate(hiddenlayer1_activate_output)
-    print("Derivative_zh_over_wh: \n", derivative_zh_over_wh2)
+    derivative_zh2_over_wh2 = derivative_z_over_derivative_w.calculate(hiddenlayer1_activate_output)
+    print("Derivative_zh_over_wh: \n", derivative_zh2_over_wh2)
     delta_value_times_zo_over_ah2 = calculate_delta.calculate(delta_value_l_over_ypredicted_times_ypredicted_over_zo, 
                                                                         derivative_zo_derivative_ah2)
     print("Delta_value_times_zo_over_ah: \n", delta_value_times_zo_over_ah2)
-    delta_value_times_zo_over_ah_times_ah_over_zh2 = delta_value_times_zo_over_ah2 * derivative_ah_over_zh2
-    print("Delta_value_times_zo_over_ah_times_ah_over_zh: \n", delta_value_times_zo_over_ah_times_ah_over_zh2)
+    delta_value_times_zo_over_ah2_times_ah2_over_zh2 = delta_value_times_zo_over_ah2 * derivative_ah2_over_zh2
+    print("Delta_value_times_zo_over_ah_times_ah_over_zh: \n", delta_value_times_zo_over_ah2_times_ah2_over_zh2)
 
-    delta_value_times_zo_over_ah_times_ah_over_zh_times_zh_over_wh2 = derivative_l_over_derivative_w.calculate(
-        derivative_zh_over_wh2, delta_value_times_zo_over_ah_times_ah_over_zh2)
+    delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_wh2 = derivative_l_over_derivative_w.calculate(
+        derivative_zh2_over_wh2, delta_value_times_zo_over_ah2_times_ah2_over_zh2)
     
-    print("Delta_value_times_zo_over_ah_times_ah_over_zh_times_zh_over_wh: \n", delta_value_times_zo_over_ah_times_ah_over_zh_times_zh_over_wh2)
+    print("Delta_value_times_zo_over_ah_times_ah_over_zh_times_zh_over_wh: \n", delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_wh2)
 
-    hidden_layer2_new_weights = newWeights.calculate(delta_value_times_zo_over_ah_times_ah_over_zh_times_zh_over_wh2
+    hidden_layer2_new_weights = newWeights.calculate(delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_wh2
                                                     ,learningrate, hiddenlayer2.weights)
     
     # Equation for hidden layer 2 bias gradient.
@@ -261,7 +261,7 @@ def main():
     # Bias update equation
     # b = b - 0.01(calculated bias avg per column. This is done over dL/dBh2.)
     
-    hiddenlayer2_bias = newBiases.calculate(delta_value_times_zo_over_ah_times_ah_over_zh2, learningrate, hiddenlayer2.biases)
+    hiddenlayer2_bias = newBiases.calculate(delta_value_times_zo_over_ah2_times_ah2_over_zh2, learningrate, hiddenlayer2.biases)
     hiddenlayer2.updating_weights_biases(hidden_layer2_new_weights, hiddenlayer2_bias)
     hiddenlayer2_new_weights, hiddenlayer2_new_biases, hiddenlayer2_old_weights, hiddenlayer2_old_biases = hiddenlayer2.updated_params
     print('Hiddenlayer2_New_Weights: \n', hiddenlayer2_new_weights)
@@ -270,17 +270,25 @@ def main():
     print('Hiddenlayer2_old_Biases: \n', hiddenlayer2_old_biases)
 
 
-
     # Equation for hidden layer 1 weight gradient.
-    # dL/dWh1 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2 * dZh2/dAh1 * dAh1/dZh1 * dZh1/dWh1
+    # dL/dWh1 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/dZh2 * dZh2/dAh1 * dAh1/dZh1 * dZh1/dWh1
 
-    # Hidden layer 2 weights and bias are calculated.
-    # The weights and bias are also updated.
-    # Deleting unnecessary details and cleaning terminal.
 
-    # TO DO:
-    # Get the hidden layer 1 weight equation(this is final)
-    # Get the hidden layer 1 bias equation.
+    # dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2
+    delta_value_times_zo_over_ah2_times_ah2_over_zh2
+
+    derivative_zh2_over_ah1 = derivative_z_over_derivative_w.calculate(hiddenlayer1.old_weights)
+    
+    hiddenlayer_activation.backward(hiddenlayer1_zvalue)
+    derivative_ah1_over_zh1 = hiddenlayer_activation.derivative
+
+    derivative_zh1_over_wh1 = derivative_z_over_derivative_w.calculate(input)
+
+
+    # Listed out all the variables we need to calculate hidden layer 1 weights.
+    # Now we just need to apply chain rule and calculate the gradient and update the hidden layer 1 weights.
+    # Once done calculate hidden layer 1 bias.
+    # Then move on to looking for a pattern to do this dynamically instead of manually.
 
 
 if __name__ == "__main__":
