@@ -277,18 +277,32 @@ def main():
     # dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2
     delta_value_times_zo_over_ah2_times_ah2_over_zh2
 
-    derivative_zh2_over_ah1 = derivative_z_over_derivative_w.calculate(hiddenlayer1.old_weights)
+    derivative_zh2_over_ah1 = derivative_z_over_derivative_w.calculate(hiddenlayer2.old_weights)
     
     hiddenlayer_activation.backward(hiddenlayer1_zvalue)
     derivative_ah1_over_zh1 = hiddenlayer_activation.derivative
 
     derivative_zh1_over_wh1 = derivative_z_over_derivative_w.calculate(input)
 
+    delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1  = calculate_delta.calculate(delta_value_times_zo_over_ah2_times_ah2_over_zh2, 
+                                                                                           derivative_zh2_over_ah1)
 
-    # Listed out all the variables we need to calculate hidden layer 1 weights.
-    # Now we just need to apply chain rule and calculate the gradient and update the hidden layer 1 weights.
-    # Once done calculate hidden layer 1 bias.
-    # Then move on to looking for a pattern to do this dynamically instead of manually.
+    delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1 = delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1 * derivative_ah1_over_zh1
+    
+    delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1_times_zh1_over_wh1 = derivative_l_over_derivative_w.calculate(
+        derivative_zh1_over_wh1, delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1,
+    )
+
+    hidden_layer1_new_weights = newWeights.calculate(delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1_times_zh1_over_wh1,
+                                                     learningrate,
+                                                     hiddenlayer1.weights)
+
+    print("Hidden layer 1 old weights: \n", hiddenlayer1.weights)
+    print("Hidden layer 1 new weights: \n", hidden_layer1_new_weights)
+
+
+    # Hidden layer 1 weights calculated.
+    # Calculate hidden layer 1 bias next.
 
 
 if __name__ == "__main__":
