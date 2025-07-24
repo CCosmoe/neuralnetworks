@@ -297,12 +297,24 @@ def main():
                                                      learningrate,
                                                      hiddenlayer1.weights)
 
-    print("Hidden layer 1 old weights: \n", hiddenlayer1.weights)
-    print("Hidden layer 1 new weights: \n", hidden_layer1_new_weights)
+    # Equation for hidden layer 1 bias gradient.
+    # dL/dBh2 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2 * dZh2/dAh1 * dAh1/dZh1 * dZh1/dBh1
 
+    hidden_layer1_new_bias = newBiases.calculate(delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1, 
+                                            learningrate, hiddenlayer1.biases)
 
-    # Hidden layer 1 weights calculated.
-    # Calculate hidden layer 1 bias next.
+    hiddenlayer1.updating_weights_biases(hidden_layer1_new_weights, hidden_layer1_new_bias)
+
+    hiddenlayer1_new_weights, hiddenlayer1_new_biases, hiddenlayer1_old_weights, hiddenlayer1_old_biases = hiddenlayer1.updated_params
+
+    print('Hiddenlayer1_New_Weights: \n', hiddenlayer1_new_weights)
+    print('Hiddenlayer1_New_Biases: \n', hiddenlayer1_new_biases)
+    print('Hiddenlayer1_old_Weights: \n', hiddenlayer1_old_weights)
+    print('Hiddenlayer1_old_Biases: \n', hiddenlayer1_old_biases)
+
+    # Hidden layer 1 bias calculated and that finishes the manual calculation
+    # Figure out how to do this dynamically spend time looking for datastructures that can help with that.
+
 
 
 if __name__ == "__main__":
