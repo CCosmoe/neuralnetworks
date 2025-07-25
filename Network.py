@@ -312,8 +312,16 @@ def main():
     print('Hiddenlayer1_old_Weights: \n', hiddenlayer1_old_weights)
     print('Hiddenlayer1_old_Biases: \n', hiddenlayer1_old_biases)
 
-    # Hidden layer 1 bias calculated and that finishes the manual calculation
-    # Figure out how to do this dynamically spend time looking for datastructures that can help with that.
+    # Figuring out pattern for calculating gradients for each layer.
+    
+    # Seems like for output layer first two derivatives get dot product(DeltaA) and the last gets transposed. Once that is transposed 
+    # then it comes at the front and gets dot product by DeltaA
+
+    # For hidden layer2
+    # We can just use the DeltaA value that we calculated from output. DeltaA then gets dot product by the next derivative(transposed) and 
+    # becomes DeltaB. DeltaB then gets elementwise operation with the next derivative and becomes DeltaC. We finally take the next derivative(transposed)
+    # and bring it at the front and dot product with DeltaC.
+
 
 
 
