@@ -315,7 +315,7 @@ def main():
     # Figuring out pattern for calculating gradients for each layer.
     
     # Seems like for output layer first two derivatives get dot product(DeltaA) and the last gets transposed. Once that is transposed 
-    # then it comes at the front and gets dot product by DeltaA
+    # then it comes at the front and gets dot product by DeltaA.
 
     # For hidden layer2
     # We can just use the DeltaA value that we calculated from output. DeltaA then gets dot product by the next derivative(transposed) and 
@@ -323,6 +323,13 @@ def main():
     # and bring it at the front and dot product with DeltaC.
 
 
+    # dL/dWh1 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/dZh2 * dZh2/dAh1 * dAh1/dZh1 * dZh1/dWh1
+
+
+    # For hidden layer
+    # We can also use the DeltaC value and dot product with the next derivative(transposed) which becaomses DeltaD. DeltaD then gets elementwise
+    # operation with the next derivative which then becomes DeltaE. The next derivative(transposed) comes at the front and gets dot product with
+    # DeltaE.
 
 
 if __name__ == "__main__":
