@@ -325,11 +325,22 @@ def main():
 
     # dL/dWh1 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/dZh2 * dZh2/dAh1 * dAh1/dZh1 * dZh1/dWh1
 
-
     # For hidden layer
     # We can also use the DeltaC value and dot product with the next derivative(transposed) which becaomses DeltaD. DeltaD then gets elementwise
     # operation with the next derivative which then becomes DeltaE. The next derivative(transposed) comes at the front and gets dot product with
     # DeltaE.
+
+
+    # Output 3 
+    # Last(transposed) dot product after the first two dot
+
+    # hidden 2
+    # Use value from output. Dot that with the tranposed value. Elementwise that with the next value.
+    # Finally bring the last tranposed at the front and dot it with the result of elementwise value.
+
+    # hidden
+    # Use value from hidden2. Dot that with the tranposed value. Elementwise that with the next value.
+    # Finally bring the last transposed at the front and dot it with the result of elementwise value.
 
 
 if __name__ == "__main__":
