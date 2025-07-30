@@ -330,7 +330,6 @@ def main():
     # operation with the next derivative which then becomes DeltaE. The next derivative(transposed) comes at the front and gets dot product with
     # DeltaE.
 
-
     # Output 3 
     # Last(transposed) dot product after the first two dot
 
@@ -342,6 +341,10 @@ def main():
     # Use value from hidden2. Dot that with the tranposed value. Elementwise that with the next value.
     # Finally bring the last transposed at the front and dot it with the result of elementwise value.
 
+
+    # Maybe a stack. 
+    # We can use a stack to push useful information and when back propgating pop information out of it.
+    # Popping from stack goes last in first out which is useful when it comes to calculating each layer.
 
 if __name__ == "__main__":
     main()
