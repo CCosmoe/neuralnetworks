@@ -350,9 +350,8 @@ def main():
     # Finally bring the last transposed at the front and dot it with the result of elementwise value.
 
 
-    # Maybe a stack. 
-    # We can use a stack to push useful information and when back propgating pop information out of it.
-    # Popping from stack goes last in first out which is useful when it comes to calculating each layer.
-
+    # We can use caching inside each neural net. So have each layer have its own z, a, dz, dw value. That way when we need access to these
+    # we can extract them by accessing the layer.
+    # We will probably also need a different class to build a neural network this will have forward, backward, update, and add function.
 if __name__ == "__main__":
     main()
