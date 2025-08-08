@@ -25,6 +25,15 @@ class Layer_Creation:
         self.forward_output = None
         self.updated_params = None
 
+        # Initializing forward and backward calculated variables.
+        # Example: dL/dWh2 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2 * dZh2/dWh2
+
+        self.z = None
+        self.a = None
+        self.da = None
+        self.secondLastProduct = None
+
+
     def forward_pass(self, input, weights):
         self.forward_output = np.dot(input, weights) + self.biases
     
@@ -40,11 +49,10 @@ class Layer_Creation:
 class RELU_Activation:
     # RELU either returns 0 if input is less than or equal 0. Otherwise return input itself.
     def activate(self, inputs):
-        # Maybe have an self.input to save the input values. They are needed for back propgations.
+        # We have an self.input to save the input values. They are needed for back propagations.
         self.inputs = inputs
         self.output = np.maximum(0, inputs)
  
-    # The derivative of RELU can be added here.
     # The derivative of RELU returns 1 if the value is greater than 0. Otherwise it returns 0. This indicates which neuron was active.
     def backward(self, inputs):
         self.derivative  = np.where(inputs > 0, 1.0, 0.0)
@@ -60,7 +68,11 @@ class SoftMax_Activation:
         # exp_values = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))
         # prob = exp_values/np.sum(exp_values, axis=1, keepdims=True)
         # self.output = prob
-
+    def backward(self, y_predicted):
+        # YPredicted(1 - YPredicted)
+        One_Minus_Y_Predicted =  y_predicted * (np.subtract(1, y_predicted))
+        return One_Minus_Y_Predicted
+    
 class Categorical_Loss:
     def calculate(self, y_pred, y_true):
         y = np.sum(y_pred * y_true, axis=1)
@@ -68,32 +80,37 @@ class Categorical_Loss:
         takemean = np.mean(natural_log)
         self.meanloss = takemean
 
-
-class Derivative_L_Over_Derivative_YPredicted:
-    def calculate(self, y_predicted, y):
+    def backward(self, y_predicted, y):
         # YPredicted - y
         # Here y is one hot encoded values.
         Y_Predicted_Minus_Y =  np.subtract(y_predicted, y)
         return Y_Predicted_Minus_Y
 
-class Derivative_YPredicted_Over_Derivative_Z:
-    def calculate(self, y_predicted):
-        # YPredicted(1 - YPredicted)
-        One_Minus_Y_Predicted =  y_predicted * (np.subtract(1, y_predicted))
-        return One_Minus_Y_Predicted
+# class Derivative_L_Over_Derivative_YPredicted:
+#     def calculate(self, y_predicted, y):
+#         # YPredicted - y
+#         # Here y is one hot encoded values.
+#         Y_Predicted_Minus_Y =  np.subtract(y_predicted, y)
+#         return Y_Predicted_Minus_Y
 
-class Derivative_Z_Over_Derivative_W:
+# class Derivative_YPredicted_Over_Derivative_Z:
+#     def calculate(self, y_predicted):
+#         # YPredicted(1 - YPredicted)
+#         One_Minus_Y_Predicted =  y_predicted * (np.subtract(1, y_predicted))
+#         return One_Minus_Y_Predicted
+
+class Transposed:
     def calculate(self, output_input):
         # transposed X 
         return np.transpose(output_input)
 
-class Calculate_Delta:
+class DotProduct:
     def calculate(self, l_over_ypredicted, ypredicted_over_z):
         delta =  np.dot(l_over_ypredicted, ypredicted_over_z)
         return delta
 
 
-class Derivative_L_over_Derivative_w:
+class DotProductFlipped:
     def calculate(self, xj, delta):
         multiplying_with_delta = np.dot(xj, delta)
         return multiplying_with_delta
@@ -125,7 +142,7 @@ def main():
     
     
     # Forward pass intialization
-    # 3 layers in total
+
     # Remember input layer exists but it does not have any weights. Its pupose is to serve the input to the first hidden layer.
     hiddenlayer1 = Layer_Creation(4, 3)
     hiddenlayer2 = Layer_Creation(3, 4)
@@ -138,11 +155,11 @@ def main():
     loss = Categorical_Loss()
 
     #Backward pass initialization
-    derivative_l_over_derivative_ypredicted = Derivative_L_Over_Derivative_YPredicted()
-    derivative_ypredicted_over_derivative_z = Derivative_YPredicted_Over_Derivative_Z()
-    derivative_z_over_derivative_w = Derivative_Z_Over_Derivative_W()
-    calculate_delta = Calculate_Delta()
-    derivative_l_over_derivative_w = Derivative_L_over_Derivative_w()
+    # derivative_l_over_derivative_ypredicted = Derivative_L_Over_Derivative_YPredicted()
+    # derivative_ypredicted_over_derivative_z = Derivative_YPredicted_Over_Derivative_Z()
+    transposing = Transposed()
+    dotproduct = DotProduct()
+    dotproductflipped = DotProductFlipped()
     newWeights = NewWeights()
     newBiases = NewBiases()
     learningrate = 0.01
@@ -188,19 +205,19 @@ def main():
     # Weight update equation
     # w = w - 0.01(dL/dWo)
 
-    l_over_ypredicted = derivative_l_over_derivative_ypredicted.calculate(outputlayer_activation.output, one_hot)
+    l_over_ypredicted = loss.backward(outputlayer_activation.output, one_hot)
     print("Derivative of L respect to Y Predicted: \n", l_over_ypredicted)
 
-    ypredicted_over_z = derivative_ypredicted_over_derivative_z.calculate(outputlayer_activation.output)
+    ypredicted_over_z = outputlayer_activation.backward(outputlayer_activation.output)
     print("Derivative of YPredicted respect to Z: \n", ypredicted_over_z)
     
-    z_over_w = derivative_z_over_derivative_w.calculate(hiddenlayer_activation2.output)
+    z_over_w = transposing.calculate(hiddenlayer_activation2.output)
     print("Derivative of Z respect to W: \n", z_over_w)
 
-    delta_value_l_over_ypredicted_times_ypredicted_over_zo = calculate_delta.calculate(l_over_ypredicted, ypredicted_over_z) # Derivative of L over Derivative of ypredicted * derivative of ypredicted over derivative of zo
+    delta_value_l_over_ypredicted_times_ypredicted_over_zo = dotproduct.calculate(l_over_ypredicted, ypredicted_over_z) # Derivative of L over Derivative of ypredicted * derivative of ypredicted over derivative of zo
     # print("Delta value for Output Layer: \n", delta_value_l_over_ypredicted_times_ypredicted_over_zo)
 
-    l_over_w = derivative_l_over_derivative_w.calculate(z_over_w, delta_value_l_over_ypredicted_times_ypredicted_over_zo)
+    l_over_w = dotproductflipped.calculate(z_over_w, delta_value_l_over_ypredicted_times_ypredicted_over_zo)
     print("Derivative of L respect to W: \n", l_over_w)
 
     layer_new_weights = newWeights.calculate(l_over_w, learningrate, output_layer.weights)
@@ -225,7 +242,7 @@ def main():
     # Weight update equation
     # w = w - 0.01(dL/dWh2)
 
-    derivative_zo_derivative_ah2 = derivative_z_over_derivative_w.calculate(output_layer.old_weights)
+    derivative_zo_derivative_ah2 = transposing.calculate(output_layer.old_weights)
     hiddenlayer_activation2.backward(hiddenlayer2_zvalue)
     print("Derv RELU: \n", hiddenlayer_activation2.derivative)
     
@@ -235,15 +252,15 @@ def main():
     print("Original Derivative_ah_over_zh: \n", hiddenlayer_activation2.derivative)
     print("Derivative_ah_over_zh: \n", derivative_ah2_over_zh2)
     # need to calculater z over w but for hidden2.
-    derivative_zh2_over_wh2 = derivative_z_over_derivative_w.calculate(hiddenlayer1_activate_output)
+    derivative_zh2_over_wh2 = transposing.calculate(hiddenlayer1_activate_output)
     print("Derivative_zh_over_wh: \n", derivative_zh2_over_wh2)
-    delta_value_times_zo_over_ah2 = calculate_delta.calculate(delta_value_l_over_ypredicted_times_ypredicted_over_zo, 
+    delta_value_times_zo_over_ah2 = dotproduct.calculate(delta_value_l_over_ypredicted_times_ypredicted_over_zo, 
                                                                         derivative_zo_derivative_ah2)
     print("Delta_value_times_zo_over_ah: \n", delta_value_times_zo_over_ah2)
     delta_value_times_zo_over_ah2_times_ah2_over_zh2 = delta_value_times_zo_over_ah2 * derivative_ah2_over_zh2
     print("Delta_value_times_zo_over_ah_times_ah_over_zh: \n", delta_value_times_zo_over_ah2_times_ah2_over_zh2)
 
-    delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_wh2 = derivative_l_over_derivative_w.calculate(
+    delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_wh2 = dotproductflipped.calculate(
         derivative_zh2_over_wh2, delta_value_times_zo_over_ah2_times_ah2_over_zh2)
     
     print("Delta_value_times_zo_over_ah_times_ah_over_zh_times_zh_over_wh: \n", delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_wh2)
@@ -277,19 +294,19 @@ def main():
     # dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2
     delta_value_times_zo_over_ah2_times_ah2_over_zh2
 
-    derivative_zh2_over_ah1 = derivative_z_over_derivative_w.calculate(hiddenlayer2.old_weights)
+    derivative_zh2_over_ah1 = transposing.calculate(hiddenlayer2.old_weights)
     
     hiddenlayer_activation.backward(hiddenlayer1_zvalue)
     derivative_ah1_over_zh1 = hiddenlayer_activation.derivative
 
-    derivative_zh1_over_wh1 = derivative_z_over_derivative_w.calculate(input)
+    derivative_zh1_over_wh1 = transposing.calculate(input)
 
-    delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1  = calculate_delta.calculate(delta_value_times_zo_over_ah2_times_ah2_over_zh2, 
+    delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1  = dotproduct.calculate(delta_value_times_zo_over_ah2_times_ah2_over_zh2, 
                                                                                            derivative_zh2_over_ah1)
 
     delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1 = delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1 * derivative_ah1_over_zh1
     
-    delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1_times_zh1_over_wh1 = derivative_l_over_derivative_w.calculate(
+    delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1_times_zh1_over_wh1 = dotproductflipped.calculate(
         derivative_zh1_over_wh1, delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1,
     )
 
