@@ -25,6 +25,8 @@ class Layer_Creation:
         self.forward_output = None
         self.updated_params = None
 
+
+
     def forward_pass(self, input, weights):
         self.forward_output = np.dot(input, weights) + self.biases
     
@@ -353,5 +355,9 @@ def main():
     # We can use caching inside each neural net. So have each layer have its own z, a, dz, dw value. That way when we need access to these
     # we can extract them by accessing the layer.
     # We will probably also need a different class to build a neural network this will have forward, backward, update, and add function.
+    
+
+
+    
 if __name__ == "__main__":
     main()
