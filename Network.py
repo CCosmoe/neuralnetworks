@@ -22,21 +22,18 @@ class Layer_Creation:
         self.biases = np.zeros((1, neurons))
         self.old_weights = None                                      # We need the old weights and biases to update earlier layers.
         self.old_biases = None
-        self.forward_output = None
         self.updated_params = None
 
         # Initializing forward and backward calculated variables.
         # Example: dL/dWh2 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2 * dZh2/dWh2
 
         self.z = None
-        self.a = None
-        self.da = None
         self.secondLastProduct = None
 
 
     def forward_pass(self, input, weights):
-        self.forward_output = np.dot(input, weights) + self.biases
-    
+        self.z = np.dot(input, weights) + self.biases
+
     def updating_weights_biases(self, layerWeights, layerBiases):
         self.old_weights = self.weights
         self.old_biases = self.biases
@@ -55,7 +52,7 @@ class RELU_Activation:
  
     # The derivative of RELU returns 1 if the value is greater than 0. Otherwise it returns 0. This indicates which neuron was active.
     def backward(self, inputs):
-        self.derivative  = np.where(inputs > 0, 1.0, 0.0)
+        self.da = np.where(inputs > 0, 1.0, 0.0)
 
 class SoftMax_Activation:
     def activate(self, inputs): 
@@ -168,14 +165,14 @@ def main():
 
     #First layer compute
     hiddenlayer1.forward_pass(input, hiddenlayer1.weights)
-    hiddenlayer1_zvalue = hiddenlayer1.forward_output
+    hiddenlayer1_zvalue = hiddenlayer1.z
     hiddenlayer_activation.activate(hiddenlayer1_zvalue)
     hiddenlayer1_activate_output = hiddenlayer_activation.output
     print("Hidden Layer's 1 after activation function: \n", hiddenlayer1_activate_output)
 
     #Second layer compute
     hiddenlayer2.forward_pass(hiddenlayer_activation.output, hiddenlayer2.weights)
-    hiddenlayer2_zvalue = hiddenlayer2.forward_output
+    hiddenlayer2_zvalue = hiddenlayer2.z
     hiddenlayer_activation2.activate(hiddenlayer2_zvalue)
     hiddenlayer2_activate_output = hiddenlayer_activation2.output
     print("Hidden's Layer's 2 after activation: \n", hiddenlayer2_activate_output)
@@ -187,7 +184,7 @@ def main():
     print("Output's weights: \n", output_layer.weights)
     print("Output's biases: \n", output_layer.biases)
 
-    outputlayer_activation.activate(output_layer.forward_output)
+    outputlayer_activation.activate(output_layer.z)
     print("Y_Predicted_Values: \n", outputlayer_activation.output)
     
     loss.calculate(outputlayer_activation.output, one_hot)
@@ -244,12 +241,12 @@ def main():
 
     derivative_zo_derivative_ah2 = transposing.calculate(output_layer.old_weights)
     hiddenlayer_activation2.backward(hiddenlayer2_zvalue)
-    print("Derv RELU: \n", hiddenlayer_activation2.derivative)
+    print("Derv RELU: \n", hiddenlayer_activation2.da)
     
-    derivative_ah2_over_zh2 = hiddenlayer_activation2.derivative
+    derivative_ah2_over_zh2 = hiddenlayer_activation2.da
     print("Deltavalue_output: \n", delta_value_l_over_ypredicted_times_ypredicted_over_zo)
     print("Derivative_zo_over_ah: \n", derivative_zo_derivative_ah2)
-    print("Original Derivative_ah_over_zh: \n", hiddenlayer_activation2.derivative)
+    print("Original Derivative_ah_over_zh: \n", hiddenlayer_activation2.da)
     print("Derivative_ah_over_zh: \n", derivative_ah2_over_zh2)
     # need to calculater z over w but for hidden2.
     derivative_zh2_over_wh2 = transposing.calculate(hiddenlayer1_activate_output)
@@ -297,7 +294,7 @@ def main():
     derivative_zh2_over_ah1 = transposing.calculate(hiddenlayer2.old_weights)
     
     hiddenlayer_activation.backward(hiddenlayer1_zvalue)
-    derivative_ah1_over_zh1 = hiddenlayer_activation.derivative
+    derivative_ah1_over_zh1 = hiddenlayer_activation.da
 
     derivative_zh1_over_wh1 = transposing.calculate(input)
 
