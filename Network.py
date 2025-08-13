@@ -34,6 +34,9 @@ class Layer_Creation:
     def forward_pass(self, input, weights):
         self.z = np.dot(input, weights) + self.biases
 
+    def secondlLastProductSetter(self, secondlastproduct):
+        self.secondLastProduct = secondlastproduct
+
     def updating_weights_biases(self, layerWeights, layerBiases):
         self.old_weights = self.weights
         self.old_biases = self.biases
@@ -189,7 +192,7 @@ def main():
     print("Derivative of Z respect to W: \n", z_over_w)
 
     delta_value_l_over_ypredicted_times_ypredicted_over_zo = dotproduct.calculate(l_over_ypredicted, ypredicted_over_z) # Derivative of L over Derivative of ypredicted * derivative of ypredicted over derivative of zo
-    # print("Delta value for Output Layer: \n", delta_value_l_over_ypredicted_times_ypredicted_over_zo)
+    output_layer.secondlLastProductSetter(delta_value_l_over_ypredicted_times_ypredicted_over_zo)
 
     l_over_w = dotproductflipped.calculate(z_over_w, delta_value_l_over_ypredicted_times_ypredicted_over_zo)
     print("Derivative of L respect to W: \n", l_over_w)
@@ -231,8 +234,9 @@ def main():
     delta_value_times_zo_over_ah2 = dotproduct.calculate(delta_value_l_over_ypredicted_times_ypredicted_over_zo, 
                                                                         derivative_zo_derivative_ah2)
     print("Delta_value_times_zo_over_ah: \n", delta_value_times_zo_over_ah2)
+
     delta_value_times_zo_over_ah2_times_ah2_over_zh2 = delta_value_times_zo_over_ah2 * derivative_ah2_over_zh2
-    print("Delta_value_times_zo_over_ah_times_ah_over_zh: \n", delta_value_times_zo_over_ah2_times_ah2_over_zh2)
+    hiddenlayer2.secondlLastProductSetter(delta_value_times_zo_over_ah2_times_ah2_over_zh2)
 
     delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_wh2 = dotproductflipped.calculate(
         derivative_zh2_over_wh2, delta_value_times_zo_over_ah2_times_ah2_over_zh2)
@@ -266,7 +270,6 @@ def main():
 
 
     # dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2
-    delta_value_times_zo_over_ah2_times_ah2_over_zh2
 
     derivative_zh2_over_ah1 = transposing.calculate(hiddenlayer2.old_weights)
     
@@ -279,7 +282,8 @@ def main():
                                                                                            derivative_zh2_over_ah1)
 
     delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1 = delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1 * derivative_ah1_over_zh1
-    
+    hiddenlayer1.secondlLastProductSetter(delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1)
+
     delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1_times_zh1_over_wh1 = dotproductflipped.calculate(
         derivative_zh1_over_wh1, delta_value_times_zo_over_ah2_times_ah2_over_zh2_times_zh2_over_ah1_times_ah1_over_zh1,
     )
