@@ -64,13 +64,15 @@ class RELU_Activation:
         self.da = np.where(inputs > 0, 1.0, 0.0)
 
 class SoftMax_Activation:
-    def activate(self, inputs): 
+    def forward_pass(self, inputs): 
         get_max_each_row = np.max(inputs, axis = 1, keepdims=True)
         set_to_zero = np.subtract(inputs, get_max_each_row)
         x = np.exp(set_to_zero)
         y = np.sum(x, axis=1, keepdims=True)
         normval = x / y 
         self.a = normval
+        print("Output after forward Softmax: \n", self.a)
+        return self.a
         # exp_values = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))
         # prob = exp_values/np.sum(exp_values, axis=1, keepdims=True)
         # self.output = prob
@@ -80,11 +82,12 @@ class SoftMax_Activation:
         return One_Minus_Y_Predicted
     
 class Categorical_Loss:
-    def calculate(self, y_pred, y_true):
+    def forward_pass(self, y_pred, y_true):
         y = np.sum(y_pred * y_true, axis=1)
         natural_log = -np.log(y)
         takemean = np.mean(natural_log)
         self.meanloss = takemean
+        return self.meanloss
 
     def backward(self, y_predicted, y):
         # YPredicted - y
@@ -130,12 +133,20 @@ class Container:
     def add(self, instance):
         self.instances.append(instance)
 
-    def forward(self, x):
+    def forward(self, x, y_true):
         input = x
         for instance in self.instances:
-            output = instance.forward_pass(input)
-            input = output
+            # We go inside this if statement last for calculating loss at the end. if not last then we 
+            # created instances in wrong order.
+            if isinstance(instance, Categorical_Loss):
+                lossoutput = instance.forward_pass(input, y_true)
+                return lossoutput
+            else:
+                output = instance.forward_pass(input)
+                input = output
 
+
+    # This is where we are going to create back propgation function.
 
 def main():
 
@@ -161,6 +172,7 @@ def main():
 
     output_layer = Layer_Creation(4, 3)
     outputlayer_activation = SoftMax_Activation()
+    loss = Categorical_Loss()
 
     # Adding them to container
     container.add(hiddenlayer1)
@@ -169,12 +181,15 @@ def main():
     container.add(hiddenlayer2)
     container.add(hiddenlayer_activation2)
 
-    # container.add(output_layer)
-    # container.add(outputlayer_activation)
+    container.add(output_layer)
+    container.add(outputlayer_activation)
+    container.add(loss)
 
+    # One epoch forward
+    forward_output = container.forward(input, one_hot)
+    print("This is loss: \n", forward_output)
 
-    container.forward(input)
-  
+    # This is where back propgation will be called.
 
 if __name__ == "__main__":
     main()
