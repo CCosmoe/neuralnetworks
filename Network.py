@@ -129,6 +129,7 @@ class NewBiases:
 class Container:
     def __init__(self):
         self.instances = []
+        self.ypreds = None
 
     def add(self, instance):
         self.instances.append(instance)
@@ -139,14 +140,21 @@ class Container:
             # We go inside this if statement last for calculating loss at the end. if not last then we 
             # created instances in wrong order.
             if isinstance(instance, Categorical_Loss):
+                self.ypreds = input
                 lossoutput = instance.forward_pass(input, y_true)
                 return lossoutput
             else:
                 output = instance.forward_pass(input)
                 input = output
 
-
     # This is where we are going to create back propgation function.
+
+    def backward(self, y_pred, y_true):
+        gradient = None
+        for instance in reversed(self.instances):
+            if isinstance(instance, Categorical_Loss):
+                gradient = instance.backward(y_pred, y_true)
+                print("First iteration. Calculating gradient for loss: \n", gradient)
 
 def main():
 
@@ -189,6 +197,8 @@ def main():
     forward_output = container.forward(input, one_hot)
     print("This is loss: \n", forward_output)
 
+    backward_output = container.backward(container.ypreds, one_hot)
+    # backward_output = container.backward()
     # This is where back propgation will be called.
 
 if __name__ == "__main__":
