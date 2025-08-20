@@ -23,6 +23,7 @@ class Layer_Creation:
         self.old_weights = None                                      # We need the old weights and biases to update earlier layers.
         self.old_biases = None
         self.updated_params = None
+        self.inputs = None
 
         # Initializing forward and backward calculated variables.
         # Example: dL/dWh2 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2 * dZh2/dWh2
@@ -34,6 +35,7 @@ class Layer_Creation:
     def forward_pass(self, input):
         print("Current Input: \n", input)
         print("Current weights: \n", self.weights)
+        self.inputs = input
         self.z = np.dot(input, self.weights) + self.biases
         print("Output after multiplying: \n", self.z)
         return self.z
@@ -47,7 +49,7 @@ class Layer_Creation:
         self.weights = layerWeights
         self.biases = layerBiases
         self.updated_params =  self.weights, self.biases, self.old_weights, self.old_biases
-
+        return self.updated_params
 
 
 class RELU_Activation:
@@ -107,7 +109,7 @@ class DotProduct:
 
 
 class DotProductFlipped:
-    def calculate(self, xj, delta):
+    def calculate(self, delta, xj):
         multiplying_with_delta = np.dot(xj, delta)
         return multiplying_with_delta
 
@@ -149,12 +151,42 @@ class Container:
 
     # This is where we are going to create back propgation function.
 
-    def backward(self, y_pred, y_true):
+    def backward(self, y_pred, y_true, learningRate):
+        dotHelper = DotProduct()
+        transposedHelper = Transposed()
+        dotProductFlippedHelper = DotProductFlipped()
+        newWeightsHelper = NewWeights()
+        newBiasesHelper = NewBiases()
+
         gradient = None
+        savingSecondLastProduct = None
+
+
         for instance in reversed(self.instances):
             if isinstance(instance, Categorical_Loss):
                 gradient = instance.backward(y_pred, y_true)
                 print("First iteration. Calculating gradient for loss: \n", gradient)
+
+            elif isinstance(instance, SoftMax_Activation):
+                softmax_gradient = instance.backward(y_pred)
+                gradient = dotHelper.calculate(gradient, softmax_gradient)
+                savingSecondLastProduct = gradient
+                print("Calculating Softmax: \n", gradient)
+
+            elif isinstance(instance, Layer_Creation): 
+                layerGradient = transposedHelper.calculate(instance.inputs)
+                gradient = dotProductFlippedHelper.calculate(gradient, layerGradient)
+
+                newWeights = newWeightsHelper.calculate(gradient, learningRate, instance.weights)
+                newBiases = newBiasesHelper.calculate(savingSecondLastProduct, learningRate, instance.biases)
+
+                layerNewWeights, layerNewBiases, layerOldWeights, layerOldBiases = instance.updating_weights_biases(newWeights, newBiases)
+                print("layerOldWeights: \n", layerOldWeights)
+                print("layerOldBiases: \n", layerOldBiases)
+                print("layerNewWeights: \n", layerNewWeights)
+                print("layerNewBiases: \n", layerNewBiases)
+
+
 
 def main():
 
@@ -182,6 +214,8 @@ def main():
     outputlayer_activation = SoftMax_Activation()
     loss = Categorical_Loss()
 
+    learningRate = 0.01
+
     # Adding them to container
     container.add(hiddenlayer1)
     container.add(hiddenlayer_activation)
@@ -197,7 +231,7 @@ def main():
     forward_output = container.forward(input, one_hot)
     print("This is loss: \n", forward_output)
 
-    backward_output = container.backward(container.ypreds, one_hot)
+    backward_output = container.backward(container.ypreds, one_hot, learningRate)
     # backward_output = container.backward()
     # This is where back propgation will be called.
 
