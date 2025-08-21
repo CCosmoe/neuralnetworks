@@ -160,7 +160,7 @@ class Container:
 
         gradient = None
         savingSecondLastProduct = None
-
+        previousLayerWeights = None
 
         for instance in reversed(self.instances):
             if isinstance(instance, Categorical_Loss):
@@ -168,10 +168,16 @@ class Container:
                 print("First iteration. Calculating gradient for loss: \n", gradient)
 
             elif isinstance(instance, SoftMax_Activation):
-                softmax_gradient = instance.backward(y_pred)
-                gradient = dotHelper.calculate(gradient, softmax_gradient)
+                softmaxGradient = instance.backward(y_pred)
+                gradient = dotHelper.calculate(gradient, softmaxGradient)
+                
+                # Assigning local variable value
                 savingSecondLastProduct = gradient
                 print("Calculating Softmax: \n", gradient)
+
+            elif isinstance(instance, RELU_Activation):
+                transposing = transposedHelper.calculate(previousLayerWeights)
+                gradient = dotHelper.calculate(savingSecondLastProduct, transposing)
 
             elif isinstance(instance, Layer_Creation): 
                 layerGradient = transposedHelper.calculate(instance.inputs)
@@ -181,6 +187,9 @@ class Container:
                 newBiases = newBiasesHelper.calculate(savingSecondLastProduct, learningRate, instance.biases)
 
                 layerNewWeights, layerNewBiases, layerOldWeights, layerOldBiases = instance.updating_weights_biases(newWeights, newBiases)
+                
+                # Assigning local variable value
+                previousLayerWeights = layerOldWeights
                 print("layerOldWeights: \n", layerOldWeights)
                 print("layerOldBiases: \n", layerOldBiases)
                 print("layerNewWeights: \n", layerNewWeights)
