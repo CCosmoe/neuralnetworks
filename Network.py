@@ -64,6 +64,7 @@ class RELU_Activation:
     # The derivative of RELU returns 1 if the value is greater than 0. Otherwise it returns 0. This indicates which neuron was active.
     def backward(self, inputs):
         self.da = np.where(inputs > 0, 1.0, 0.0)
+        return self.da
 
 class SoftMax_Activation:
     def forward_pass(self, inputs): 
@@ -161,6 +162,8 @@ class Container:
         gradient = None
         savingSecondLastProduct = None
         previousLayerWeights = None
+        outputLayer = True
+        layerRELU = None
 
         for instance in reversed(self.instances):
             if isinstance(instance, Categorical_Loss):
@@ -178,22 +181,48 @@ class Container:
             elif isinstance(instance, RELU_Activation):
                 transposing = transposedHelper.calculate(previousLayerWeights)
                 gradient = dotHelper.calculate(savingSecondLastProduct, transposing)
+                layerRELU = instance
 
             elif isinstance(instance, Layer_Creation): 
-                layerGradient = transposedHelper.calculate(instance.inputs)
-                gradient = dotProductFlippedHelper.calculate(gradient, layerGradient)
-
-                newWeights = newWeightsHelper.calculate(gradient, learningRate, instance.weights)
-                newBiases = newBiasesHelper.calculate(savingSecondLastProduct, learningRate, instance.biases)
-
-                layerNewWeights, layerNewBiases, layerOldWeights, layerOldBiases = instance.updating_weights_biases(newWeights, newBiases)
                 
-                # Assigning local variable value
-                previousLayerWeights = layerOldWeights
-                print("layerOldWeights: \n", layerOldWeights)
-                print("layerOldBiases: \n", layerOldBiases)
-                print("layerNewWeights: \n", layerNewWeights)
-                print("layerNewBiases: \n", layerNewBiases)
+                if (outputLayer):
+                    layerGradient = transposedHelper.calculate(instance.inputs)
+                    gradient = dotProductFlippedHelper.calculate(gradient, layerGradient)
+
+                    newWeights = newWeightsHelper.calculate(gradient, learningRate, instance.weights)
+                    newBiases = newBiasesHelper.calculate(savingSecondLastProduct, learningRate, instance.biases)
+
+                    layerNewWeights, layerNewBiases, layerOldWeights, layerOldBiases = instance.updating_weights_biases(newWeights, newBiases)
+
+                    # Assigning local variable value
+                    previousLayerWeights = layerOldWeights
+                    print("layerOldWeights: \n", layerOldWeights)
+                    print("layerOldBiases: \n", layerOldBiases)
+                    print("layerNewWeights: \n", layerNewWeights)
+                    print("layerNewBiases: \n", layerNewBiases)
+
+                    outputLayer = False
+
+                else:
+                    elementWise = layerRELU.backward(instance.z)
+                    gradient = gradient * elementWise
+
+                    # saving for current layer bias calculation and also next layer's calculation
+                    savingSecondLastProduct = gradient
+                    
+                    transposed = transposedHelper.calculate(instance.inputs)
+                    gradient = dotProductFlippedHelper.calculate(gradient, transposed)
+
+                    newWeights = newWeightsHelper.calculate(gradient, learningRate, instance.weights)
+                    newBiases = newBiasesHelper.calculate(savingSecondLastProduct, learningRate, instance.biases)
+
+                    layerNewWeights, layerNewBiases, layerOldWeights, layerOldBiases = instance.updating_weights_biases(newWeights, newBiases)
+
+                    previousLayerWeights = layerOldWeights
+                    print("layerOldWeights: \n", layerOldWeights)
+                    print("layerOldBiases: \n", layerOldBiases)
+                    print("layerNewWeights: \n", layerNewWeights)
+                    print("layerNewBiases: \n", layerNewBiases)
 
 
 
