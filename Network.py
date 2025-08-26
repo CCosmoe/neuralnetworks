@@ -18,8 +18,6 @@ class Layer_Creation:
 
 
     def forward_pass(self, input):
-        # print("Current Input: \n", input)
-        # print("Current weights: \n", self.weights)
         self.inputs = input
         self.z = np.dot(input, self.weights) + self.biases
         # print("Output after multiplying: \n", self.z)
@@ -61,9 +59,6 @@ class SoftMax_Activation:
         self.a = normval
         # print("Output after forward Softmax: \n", self.a)
         return self.a
-        # exp_values = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))
-        # prob = exp_values/np.sum(exp_values, axis=1, keepdims=True)
-        # self.output = prob
     def backward(self, y_predicted):
         # YPredicted(1 - YPredicted)
         One_Minus_Y_Predicted =  y_predicted * (np.subtract(1, y_predicted))
@@ -90,8 +85,6 @@ class Transposed:
 
 class DotProduct:
     def calculate(self, l_over_ypredicted, ypredicted_over_z):
-        # print("Categorical Gradient: \n", l_over_ypredicted.shape)
-        # print("Softmax Gradient: \n", ypredicted_over_z.shape)
         delta =  np.dot(l_over_ypredicted, ypredicted_over_z)
         return delta
 
@@ -155,16 +148,7 @@ class Container:
         for instance in reversed(self.instances):
             if isinstance(instance, Categorical_Loss):
                 gradient = instance.backward(y_pred, y_true)
-                # print("First iteration. Calculating gradient for loss: \n", gradient)
                 savingSecondLastProduct = gradient
-
-            # elif isinstance(instance, SoftMax_Activation):
-            #     softmaxGradient = instance.backward(y_pred)
-            #     gradient = dotHelper.calculate(gradient, softmaxGradient)
-                
-            #     # Assigning local variable value
-            #     savingSecondLastProduct = gradient
-            #     # print("Calculating Softmax: \n", gradient)
 
             elif isinstance(instance, RELU_Activation):
                 transposing = transposedHelper.calculate(previousLayerWeights)
@@ -184,10 +168,6 @@ class Container:
 
                     # Assigning local variable value
                     previousLayerWeights = layerOldWeights
-                    # print("layerOldWeights: \n", layerOldWeights)
-                    # print("layerOldBiases: \n", layerOldBiases)
-                    # print("layerNewWeights: \n", layerNewWeights)
-                    # print("layerNewBiases: \n", layerNewBiases)
 
                     outputLayer = False
 
@@ -207,10 +187,6 @@ class Container:
                     layerNewWeights, layerNewBiases, layerOldWeights, layerOldBiases = instance.updating_weights_biases(newWeights, newBiases)
 
                     previousLayerWeights = layerOldWeights
-                    # print("layerOldWeights: \n", layerOldWeights)
-                    # print("layerOldBiases: \n", layerOldBiases)
-                    # print("layerNewWeights: \n", layerNewWeights)
-                    # print("layerNewBiases: \n", layerNewBiases)
 
 
 def generate_spiral_data(points, classes):
