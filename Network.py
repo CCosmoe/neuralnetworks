@@ -1,5 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+import numpy as np
 
 class Layer_Creation: 
     def __init__(self, inputs, neurons):
@@ -66,6 +70,7 @@ class SoftMax_Activation:
     
 class Categorical_Loss:
     def forward_pass(self, y_pred, y_true):
+        y_pred = np.clip(y_pred, 1e-7, 1 - 1e-7)
         y = np.sum(y_pred * y_true, axis=1)
         natural_log = -np.log(y)
         takemean = np.mean(natural_log)
@@ -233,14 +238,23 @@ def main():
 
 
     losses = []
-    epochs = 300
+    epochs = 500
     for i in range(epochs):
         forward_output = container.forward(input, one_hot)
-        losses.append(forward_output)
-        container.backward(container.ypreds, one_hot, learningRate)
-        if i % 100 == 0:
-            print(f"Epoch {i}, Loss: {forward_output:.4f}")
 
+        # Save loss
+        losses.append(forward_output)
+
+        # Backprop
+        container.backward(container.ypreds, one_hot, learningRate)
+
+        # ✅ Accuracy calculation
+        y_true_class = np.argmax(one_hot, axis=1)
+        y_pred_class = np.argmax(container.ypreds, axis=1)
+        accuracy = np.mean(y_true_class == y_pred_class)
+
+        if i % 100 == 0:
+            print(f"Epoch {i}, Loss: {forward_output:.4f}, Accuracy: {accuracy:.4f}")
 
 
     # ✅ Plot loss curve
