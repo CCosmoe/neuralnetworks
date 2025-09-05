@@ -79,18 +79,6 @@ class Categorical_Loss:
         Y_Predicted_Minus_Y =  np.subtract(y_predicted, y)
         return Y_Predicted_Minus_Y
 
-# class Derivative_L_Over_Derivative_YPredicted:
-#     def calculate(self, y_predicted, y):
-#         # YPredicted - y
-#         # Here y is one hot encoded values.
-#         Y_Predicted_Minus_Y =  np.subtract(y_predicted, y)
-#         return Y_Predicted_Minus_Y
-
-# class Derivative_YPredicted_Over_Derivative_Z:
-#     def calculate(self, y_predicted):
-#         # YPredicted(1 - YPredicted)
-#         One_Minus_Y_Predicted =  y_predicted * (np.subtract(1, y_predicted))
-#         return One_Minus_Y_Predicted
 
 class Transposed:
     def calculate(self, output_input):
@@ -148,8 +136,6 @@ def main():
     loss = Categorical_Loss()
 
     #Backward pass initialization
-    # derivative_l_over_derivative_ypredicted = Derivative_L_Over_Derivative_YPredicted()
-    # derivative_ypredicted_over_derivative_z = Derivative_YPredicted_Over_Derivative_Z()
     transposing = Transposed()
     dotproduct = DotProduct()
     dotproductflipped = DotProductFlipped()
