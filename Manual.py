@@ -1,21 +1,5 @@
 import numpy as np
 
-# def main():
-#     input =  np.array([[1,    2,   3,  2.5],
-#                        [2,     5,  -1,  2.0],
-#                        [-1.5, 2.7, 3.3, 0.8]])
-    
-#     layer_weights = np.array([[0.2, 0.5, -0.26],
-#                               [0.8,-0.91, -0.27],
-#                               [-0.5, 0.26, 0.17],
-#                               [1.0, -0.5, 0.87 ]])
-    
-#     matrix_multi = matrix_multiplication(input, layer_weights)
-
-#     print(matrix_multi)
-
-
-
 class Layer_Creation: 
     def __init__(self, inputs, neurons):
         self.weights = 0.10*(np.random.randn(inputs, neurons))
@@ -268,10 +252,6 @@ def main():
 
     # Equation for hidden layer 1 weight gradient.
     # dL/dWh1 = dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/dZh2 * dZh2/dAh1 * dAh1/dZh1 * dZh1/dWh1
-
-
-    # dL/dYpredicted * dYpredicted/dZo * dZo/dAh2 * dAh2/ dZh2
-    delta_value_times_zo_over_ah2_times_ah2_over_zh2
 
     derivative_zh2_over_ah1 = transposing.calculate(hiddenlayer2.old_weights)
     
