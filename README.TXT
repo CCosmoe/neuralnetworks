@@ -32,17 +32,10 @@ Training
 - Showcased how neural networks learn patterns from data through repeated updates.
 
 Key Concepts Implemented
-
-Weights & Biases – learned parameters initialized randomly.
-
-Activation Functions – introduced non-linear decision boundaries.
-
-Softmax Function – converted logits into probability distributions.
-
-Cross-Entropy Loss – measured the difference between predicted and true labels.
-
-Chain Rule – applied to compute gradients in backpropagation.
-
-Gradient Descent – optimization loop updating weights & biases.
-
-Epochs – training loop to repeatedly refine the network.
+- Weights & Biases – learned parameters initialized randomly.
+- Activation Functions – introduced non-linear decision boundaries.
+- Softmax Function – converted logits into probability distributions.
+- Cross-Entropy Loss – measured the difference between predicted and true labels.
+- Chain Rule – applied to compute gradients in backpropagation.
+- Gradient Descent – optimization loop updating weights & biases.
+- Epochs – training loop to repeatedly refine the network.
