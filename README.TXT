@@ -39,3 +39,11 @@ Key Concepts Implemented
 - Chain Rule – applied to compute gradients in backpropagation.
 - Gradient Descent – optimization loop updating weights & biases.
 - Epochs – training loop to repeatedly refine the network.
+
+
+Why This Project?
+By building each component from scratch, I gained a strong understanding of:
+- How data flows through layers in forward propagation.
+- How gradients are computed and applied in backpropagation.
+- How repeated epochs lead to learning and loss minimization.
+- This foundation makes it easier to understand and debug neural networks in high-level frameworks later.
