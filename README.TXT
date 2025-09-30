@@ -47,3 +47,8 @@ By building each component from scratch, I gained a strong understanding of:
 - How gradients are computed and applied in backpropagation.
 - How repeated epochs lead to learning and loss minimization.
 - This foundation makes it easier to understand and debug neural networks in high-level frameworks later.
+
+Future Improvements
+- Add support for multiple hidden layers.
+- Experiment with different optimizers.
+- Test on larger datasets.
