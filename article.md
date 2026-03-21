@@ -1,6 +1,6 @@
 # I built a neural network from scratch with just NumPy
 
-I've used PyTorch plenty of times. Call model.fit(), call .backward(), tweak some hyperparameters, etc. It works, until you hit a problem. When my models weren't converging or the loss was doing something weird, I didn't really know what to change or why. I was just guessing — adjusting learning rates, swapping optimizers, hoping something would stick. I realized I didn't actually understand the math behind what these functions were doing. So I decided to build a neural network from scratch. No PyTorch, no TensorFlow, no autograd. Just NumPy and math.
+I've used PyTorch before — functions like .backward() and .forward() — but I never really understood what was happening behind those calls. That became a problem when my models weren't converging or the loss was doing something it wasn't supposed to. I'd just start guessing by changing the learning rate or swapping optimizer. So to get a deeper understanding, I built a neural network from scratch using just NumPy.
 
 ## What I was trying to do
 
