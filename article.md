@@ -30,10 +30,8 @@ Once I figured out the pattern for how gradients flow backward through each laye
 
 500 epochs, learning rate of 0.001, and the network separates all three spirals. The loss drops steadily and the decision boundary plot shows clean non-linear separation between the classes.
 
-I also made a Streamlit app where you can change the epochs and learning rate with sliders and see how it affects the loss curve and decision boundary. I used AI for the frontend part since that wasn't the point of the project — the point was understanding the math and the internals.
+I also made a Streamlit app where you can change the epochs and learning rate with sliders and see how it affects the loss curve and decision boundary. I used AI for the frontend part since that wasn't the point of the project, the point was understanding the math and the internals.
 
-## Why I did this
-
-I made this to get a better understanding of neural networks so when a model isn't converging I'm not just randomly changing hyperparameters — I'm thinking about what the gradients are actually doing. When I read about optimizers like Adam I understand what problem they're solving because I've hit those limitations myself with basic gradient descent.
+I started this because my models weren't converging and I was just guessing at the learning rate. I still hit problems, but now I know where to look. And when I read about optimizers like Adam I get what problem they're solving, because I've run into those limits myself.
 
 Full project is on my GitHub if you want to look at the code or try something similar yourself.
