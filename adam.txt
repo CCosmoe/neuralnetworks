@@ -1,0 +1,54 @@
+Adam — what it is and how it relates to this project
+
+My understanding (solidified):
+If a gradient is high it gets a smaller learning rate, and if a gradient is small
+it gets a higher learning rate. That direction is correct, with two refinements:
+
+1. It's based on recent HISTORY, not the current gradient.
+   Adam keeps a running average of each weight's squared gradients — "how big have
+   this weight's gradients been lately," not just right now. It divides the step by
+   (roughly) the square root of that average.
+     - Weight whose gradients have consistently been large -> divided by a big number
+       -> smaller effective steps.
+     - Weight whose gradients have consistently been small -> divided by a small
+       number -> larger effective steps.
+   So a weight that had huge gradients for 50 steps then suddenly gets a tiny gradient
+   still has a small-ish learning rate that step, because the running average is still
+   large. It reacts to the trend, not a single spike.
+
+2. The goal is balance, not reward.
+   The point isn't "small gradients deserve a reward." In plain SGD, weights with
+   naturally large gradients dominate the update and weights with tiny gradients barely
+   move, so the network learns unevenly. Adam evens that out so every weight makes
+   meaningful progress instead of a few loud ones drowning out the rest.
+
+What Adam actually is:
+Adam is an optimizer — a smarter rule for the weight-update step. It keeps the same
+shape as my update rule but changes the two "somethings":
+
+   plain SGD (what I built):   w = w - learning_rate * gradient
+
+
+Adam keeps the same w = w - (something) * (something) shape, but makes two changes to that "something":
+
+Adam adds two things on top of that:
+   - Momentum: instead of using just the current gradient, it uses a running average
+     of recent gradients. If the gradient keeps pointing the same way it builds up
+     speed; if it keeps flipping sign it damps down. Like a ball rolling downhill
+     instead of teleporting one fixed step at a time.
+   - Per-weight learning rates: instead of one global learning_rate for every weight,
+     it scales the step per weight based on that weight's gradient history (point 1
+     above).
+
+
+How it connects to this project:
+My code is pure SGD — one global learning_rate (0.001) for the whole network. That's
+exactly the limitation Adam solves. When my models weren't converging I'd just guess
+at the learning rate, because with plain SGD one rate has to work for the entire
+network: too high and it overshoots and diverges, too low and it crawls or gets stuck.
+Adam mostly removes that knife-edge — per-weight scaling plus momentum make it far less
+sensitive to picking the exact right learning rate, which is why people often just use
+its defaults and move on.
+
+Note: I have NOT implemented Adam in this project. The code is pure SGD. I just
+understand what problem Adam solves now, because I ran into that limit myself.
