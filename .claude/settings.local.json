@@ -3,7 +3,8 @@
     "allow": [
       "Bash(grep -E \"\\\\.\\(py|txt|md|json|yaml|yml\\)$\")",
       "WebSearch",
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(git rm *)"
     ]
   }
 }
