@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(grep -E \"\\\\.\\(py|txt|md|json|yaml|yml\\)$\")",
-      "WebSearch"
+      "WebSearch",
+      "Bash(git check-ignore *)",
+      "Bash(git rm *)"
     ]
   }
 }

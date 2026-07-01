@@ -31,6 +31,7 @@ Once I figured out the pattern for how gradients flow backward through each laye
 Here's the backward pass loop, walking through the network in reverse and updating each layer:
 
 ```python
+
 def backward(self, y_pred, y_true, lr):
     gradient = None
     delta = None              # carried gradient before the matmul into weights
@@ -55,21 +56,23 @@ def backward(self, y_pred, y_true, lr):
                 gradient = gradient * relu.backward(instance.z)
                 delta = gradient
 
-            # dW = inputs.T @ delta,  db = sum(delta, axis=0)
-            dW = instance.inputs.T @ gradient if output_layer else instance.inputs.T @ gradient
+            # weight gradient: multiply this layer's transposed inputs by its gradient
+            dW = np.dot(instance.inputs.T, gradient)
             new_w = instance.weights - lr * dW
+            # bias gradient: sum the gradient down the sample axis
             new_b = instance.biases  - lr * np.sum(delta, axis=0, keepdims=True)
 
-            # save OLD weights before overwriting — the next layer back needs them
+            # save OLD weights before overwriting, the next layer back needs them
             _, _, prev_weights, _ = instance.updating_weights_biases(new_w, new_b)
             output_layer = False
+            
 ```
 
 Iterating in reverse meant each layer's update depended on the *original* weights of the layer ahead of it, which is why every `Layer_Creation` keeps an `old_weights` reference. That detail is what I called out in the lessons below.
 
 ## Things I learned by doing it manually
 
-**You need to save the old weights before updating them.** When you're doing backpropagation and you update the output layer's weights first, the hidden layer still needs the original output weights for its gradient calculation.
+**You need to save the old weights before updating them.** When you're doing backpropagation and you update the output layer's weights first, the hidden layer still needs the original output weights for its gradient calculation. In the backward pass snippet above, that's the `updating_weights_biases` line at the bottom of the loop. It returns `prev_weights` so the next iteration can use them before they get overwritten.
 
 I didn't realize this at first and couldn't figure out why my hidden layer gradients were wrong. Frameworks handle this silently. You'd never even think about it if you're just using PyTorch.
 
