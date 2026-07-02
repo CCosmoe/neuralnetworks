@@ -96,6 +96,8 @@ This one took me a while to figure out because if you try to update a `(3,)` bia
 
 If a gradient is positive, that means increasing that weight would increase the loss. The negative sign in the equation flips it, so the weight moves in the opposite direction, toward lower loss. If the gradient is negative, the weight gets pushed up instead.
 
+And the size of the gradient told me how much each weight was actually affecting the loss right then. A big gradient meant that weight was doing a lot of damage and needed a big correction. A small gradient meant it was already close to fine and only needed a nudge.
+
 That's all gradient descent is doing: using the sign and size of each gradient to figure out which way to move every weight to minimize loss. I only got this by printing the actual numbers and seeing how they changed.
 
 ## How it turned out
