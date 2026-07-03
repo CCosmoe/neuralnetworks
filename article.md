@@ -108,6 +108,8 @@ Getting there took a fair amount of guessing on the learning rate because one le
 
 I also made a Streamlit app where you can change the epochs and learning rate with sliders and see how it affects the loss curve and decision boundary. I used AI for the frontend part since that wasn't the point of the project, the point was understanding the math and the internals.
 
+Now `.backward()` isn't a black box to me anymore.
+
 Full project is on my GitHub if you want to look at the code. If you've built one from scratch too, what surprised you most when you actually did the math by hand?
 
 #MachineLearning #NeuralNetworks #Python #NumPy #DeepLearning
