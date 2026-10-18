@@ -1,0 +1,12 @@
+venv/
+.git/
+.github/
+.claude/
+__pycache__/
+**/__pycache__/
+.pytest_cache/
+tests/
+*.md
+*.txt
+!requirements-api.txt
+*.png

@@ -1,0 +1,18 @@
+{
+  "architecture": "Input(2) -> Dense(64, ReLU) -> Dense(64, ReLU) -> Dense(3, Softmax)",
+  "layer_sizes": [
+    2,
+    64,
+    64,
+    3
+  ],
+  "classes": 3,
+  "epochs": 2000,
+  "learning_rate": 0.001,
+  "seed": 42,
+  "train_loss": 0.0246,
+  "train_accuracy": 0.9933,
+  "test_loss": 0.1084,
+  "test_accuracy": 0.98,
+  "trained_at": "2026-10-14T05:48:03+00:00"
+}
