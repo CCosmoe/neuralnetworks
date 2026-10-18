@@ -42,9 +42,7 @@ class SoftMax_Activation:
         y = np.sum(x, axis=1, keepdims=True)
         normval = x / y 
         self.output = normval
-        # exp_values = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))
-        # prob = exp_values/np.sum(exp_values, axis=1, keepdims=True)
-        # self.output = prob
+
     def backward(self, y_predicted):
         # YPredicted(1 - YPredicted)
         One_Minus_Y_Predicted =  y_predicted * (np.subtract(1, y_predicted))
