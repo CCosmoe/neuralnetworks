@@ -1,4 +1,4 @@
-# Runtime dependencies for the inference API (Docker image / Cloud Run).
+# Runtime dependencies for the inference API (Docker image / Render).
 # matplotlib and scikit-learn are only here because Network.py imports them.
 numpy==2.2.3
 matplotlib==3.10.5
